@@ -1,0 +1,62 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppClean.targets(76,5): warning : 'f:\source\recordht2\debug\recordht.exe' 경로에 대한 액세스가 거부되었습니다.
+  stdafx.cpp
+  base64.cpp
+  hqueue.cpp
+  hxml.cpp
+  linked_list.cpp
+  ppstack.cpp
+  rfc_md5.cpp
+  sys_buf.cpp
+  sys_log.cpp
+  sys_os.cpp
+  util.cpp
+  word_analyse.cpp
+  xml_node.cpp
+  main.cpp
+  audio_decoder.cpp
+  audio_encoder.cpp
+  avcodec_mutex.cpp
+  rtmp_cln.cpp
+  aac_rtp_rx.cpp
+  bit_vector.cpp
+  h264_rtp_rx.cpp
+  코드를 생성하고 있습니다...
+  컴파일하고 있습니다...
+  h264_util.cpp
+  h265_rtp_rx.cpp
+  h265_util.cpp
+  media_util.cpp
+  mjpeg_rtp_rx.cpp
+  mjpeg_tables.cpp
+  mpeg4.cpp
+  mpeg4_rtp_rx.cpp
+  pcm_rtp_rx.cpp
+  rtp_rx.cpp
+  rtsp_backchannel.cpp
+  rtsp_cln.cpp
+  rtsp_parse.cpp
+  rtsp_rcua.cpp
+  rtsp_util.cpp
+  avi_read.cpp
+  avi_write.cpp
+  mp4_write.cpp
+  r2f.cpp
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1750,39): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1649,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1663,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1709,34): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1709,27): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1709,42): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1709,146): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
+  r2f_cfg.cpp
+  코드를 생성하고 있습니다...
+  컴파일하고 있습니다...
+  r2f_rua.cpp
+  코드를 생성하고 있습니다...
+  amf.c
+  hashswf.c
+  log.c
+  parseurl.c
+  rtmp.c
+  코드를 생성하고 있습니다...
+LINK : fatal error LNK1104: 'F:\Source\RecordHT2\Debug\RecordHT.exe' 파일을 열 수 없습니다.
