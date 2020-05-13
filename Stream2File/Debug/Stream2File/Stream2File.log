@@ -1,0 +1,9 @@
+﻿  r2f.cpp
+F:\work\Happytime-stream2file-code_new\Happytime-stream2file-code\Stream2File\src\r2f.cpp(1750,39): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+F:\work\Happytime-stream2file-code_new\Happytime-stream2file-code\Stream2File\src\r2f.cpp(1649,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
+F:\work\Happytime-stream2file-code_new\Happytime-stream2file-code\Stream2File\src\r2f.cpp(1663,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
+F:\work\Happytime-stream2file-code_new\Happytime-stream2file-code\Stream2File\src\r2f.cpp(1709,34): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
+F:\work\Happytime-stream2file-code_new\Happytime-stream2file-code\Stream2File\src\r2f.cpp(1709,27): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
+F:\work\Happytime-stream2file-code_new\Happytime-stream2file-code\Stream2File\src\r2f.cpp(1709,42): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
+F:\work\Happytime-stream2file-code_new\Happytime-stream2file-code\Stream2File\src\r2f.cpp(1709,146): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
+  Stream2File.vcxproj -> F:\work\Happytime-stream2file-code_new\Happytime-stream2file-code\Debug\Stream2File.exe

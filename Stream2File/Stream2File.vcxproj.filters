@@ -1,0 +1,186 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="bm">
+      <UniqueIdentifier>{34081695-9a7d-4202-a7fb-33765acfc1d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rtp">
+      <UniqueIdentifier>{384f8a5f-630c-40df-8260-0c33cc23e3e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rtsp">
+      <UniqueIdentifier>{acd88524-2a51-4893-a7f9-ba1c9e5145d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Resource files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="librtmp">
+      <UniqueIdentifier>{8f242a1c-8d8e-4236-8cbe-d0111020b3d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="rtmp">
+      <UniqueIdentifier>{432df572-eb90-4d66-91e1-3d42b6ddbbda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="media">
+      <UniqueIdentifier>{fca58385-19e9-4393-a2a2-e5f7b019951e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
+    <ClInclude Include="rtmp\rtmp_cln.h">
+      <Filter>rtmp</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="bm\base64.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\hqueue.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\linked_list.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\ppstack.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\rfc_md5.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\sys_buf.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\sys_log.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\sys_os.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\util.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\word_analyse.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\aac_rtp_rx.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\bit_vector.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\h264_rtp_rx.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\h264_util.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\h265_rtp_rx.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\h265_util.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\media_util.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\mjpeg_rtp_rx.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\mjpeg_tables.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\mpeg4.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\mpeg4_rtp_rx.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\pcm_rtp_rx.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtp\rtp_rx.cpp">
+      <Filter>rtp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtsp\rtsp_backchannel.cpp">
+      <Filter>rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtsp\rtsp_cln.cpp">
+      <Filter>rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtsp\rtsp_parse.cpp">
+      <Filter>rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtsp\rtsp_rcua.cpp">
+      <Filter>rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtsp\rtsp_util.cpp">
+      <Filter>rtsp</Filter>
+    </ClCompile>
+    <ClCompile Include="src\r2f.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\r2f_cfg.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\hxml.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="bm\xml_node.cpp">
+      <Filter>bm</Filter>
+    </ClCompile>
+    <ClCompile Include="src\r2f_rua.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\avi_write.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\avi_read.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mp4_write.cpp">
+      <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="librtmp\amf.c">
+      <Filter>librtmp</Filter>
+    </ClCompile>
+    <ClCompile Include="librtmp\hashswf.c">
+      <Filter>librtmp</Filter>
+    </ClCompile>
+    <ClCompile Include="librtmp\log.c">
+      <Filter>librtmp</Filter>
+    </ClCompile>
+    <ClCompile Include="librtmp\parseurl.c">
+      <Filter>librtmp</Filter>
+    </ClCompile>
+    <ClCompile Include="librtmp\rtmp.c">
+      <Filter>librtmp</Filter>
+    </ClCompile>
+    <ClCompile Include="rtmp\rtmp_cln.cpp">
+      <Filter>rtmp</Filter>
+    </ClCompile>
+    <ClCompile Include="media\audio_decoder.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="media\audio_encoder.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="media\avcodec_mutex.cpp">
+      <Filter>media</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
