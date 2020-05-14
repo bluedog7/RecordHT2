@@ -75,6 +75,32 @@ void mp4_write_close(MP4CTX * p_ctx)
 
     if (p_ctx->handler)
     {
+        if (p_ctx->s_time < p_ctx->e_time && p_ctx->i_frame_video > 1)
+        {
+            // Final correction to the actual frame rate
+            float fps = (float)(p_ctx->i_frame_video * 1000.0) / (p_ctx->e_time - p_ctx->s_time);
+            p_ctx->v_fps = (uint32)(fps + 0.5);
+
+            log_print(HT_LOG_DBG, "%s, stime=%u, etime=%u, frames=%d, fps=%d\r\n",
+                __FUNCTION__, p_ctx->s_time, p_ctx->e_time, p_ctx->i_frame_video, p_ctx->v_fps);
+
+            printf( "%s, stime=%u, etime=%u, frames=%d, fps=%d\r\n",
+                __FUNCTION__, p_ctx->s_time, p_ctx->e_time, p_ctx->i_frame_video, p_ctx->v_fps);
+
+            log_print(HT_LOG_DBG, "%s, file=%s,stime=%u, etime=%u, frames=%d, fps=%d\r\n",
+                __FUNCTION__, p_ctx->filename, p_ctx->s_time, p_ctx->e_time, p_ctx->i_frame_video, p_ctx->v_fps);
+        }
+
+        if (p_ctx->v_fps > 0)
+        {
+            gf_isom_set_timescale(p_ctx->handler, p_ctx->v_fps);
+            gf_isom_set_media_timescale(p_ctx->handler, p_ctx->v_track_id, p_ctx->v_fps, GF_TRUE);
+        }
+        else
+        {
+            gf_isom_set_timescale(p_ctx->handler, 25);
+        }
+
 	    gf_isom_close(p_ctx->handler);
 	}
 
@@ -228,7 +254,7 @@ int mp4_update_header(MP4CTX * p_ctx)
 
     if (p_ctx->v_track_id > 0)
     {
-        gf_isom_set_media_timescale(p_ctx->handler, p_ctx->v_track_id, p_ctx->v_fps > 0 ? p_ctx->v_fps : 25, GF_FALSE);
+        gf_isom_set_timescale(p_ctx->handler, p_ctx->v_fps > 0 ? p_ctx->v_fps : 25);
     }
 
     sys_os_mutex_leave(p_ctx->mutex);

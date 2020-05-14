@@ -558,10 +558,12 @@ void rtsp_reconn(RUA * p_rua)
 {
     char url[256], user[64], pass[64];
     CRtspClient * p_rtsp = p_rua->rtsp;
-
-	strcpy(url, p_rtsp->get_url());
-	strcpy(user, p_rtsp->get_user());
-	strcpy(pass, p_rtsp->get_pass());
+    if (p_rtsp == NULL) return;
+    
+        strcpy(url, p_rtsp->get_url());
+        strcpy(user, p_rtsp->get_user());
+        strcpy(pass, p_rtsp->get_pass());
+    
 
 	log_print(HT_LOG_DBG, "%s, url = %s, user = %s, pass = %s\r\n", __FUNCTION__, url, user, pass);
 
@@ -990,6 +992,8 @@ BOOL r2f_rua_start(RUA * p_rua)
     if (ret)
     {
         printf("stream2file : %s ==> %s\r\n", p_rua->url, p_rua->savepath);
+
+        log_print(HT_LOG_INFO, "stream2file : %s ==> %s\r\n", p_rua->url, p_rua->savepath);
     }
     
     return ret;
@@ -1355,6 +1359,7 @@ void r2f_file_switch(RUA * p_rua)
     p_rua->starttime = time(NULL);
 
     printf("stream2file : %s ==> %s\r\n", p_rua->url, p_rua->savepath);
+    log_print(HT_LOG_INFO, "stream2file : %s ==> %s\r\n", p_rua->url, p_rua->savepath);
     
     log_print(HT_LOG_DBG, "%s, exit\r\n", __FUNCTION__);
 }
