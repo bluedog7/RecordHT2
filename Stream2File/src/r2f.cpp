@@ -1794,9 +1794,21 @@ BOOL r2f_start()
                             if (p_rua->mp4ctx)
                             {
                                 mp4_write_close(p_rua->mp4ctx);
-                                p_rua->mp4ctx = NULL;
+                               
                             }
-                            sprintf_s(fname, "%s", p_rua->savepath);
+
+                            const time_t rawtime = (const time_t)p_rua->mp4ctx->s_time;
+
+                            struct tm* dt;
+                            char timestr[30];
+                            char buffer[30];
+
+                            p_rua->mp4ctx = NULL;
+                            dt = localtime(&rawtime);
+                            // use any strftime format spec here
+                           // strftime(timestr, sizeof(timestr), "%m%d%H%M%y", dt);
+                           // sprintf(buffer, "%s", timestr);
+                            sprintf_s(fname, "%s start time is [%d:%d:%d]", p_rua->savepath, dt->tm_hour, dt->tm_min, dt->tm_sec);
                             //cthread[threadcnt] = new thread(ConvertThread, fname);
                            // threadcnt++;
                             //if (threadcnt > 255) threadcnt = 0;
@@ -1808,6 +1820,8 @@ BOOL r2f_start()
 
 
                             // ConvertThread(p_rua->savepath);
+                            log_print(HT_LOG_INFO, "[%s]", fname);
+                            printf( "[%s]\n", fname);
                             log_print(HT_LOG_INFO, "[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
                             printf("[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
                             rua_set_idle(p_rua);
@@ -1832,7 +1846,8 @@ BOOL r2f_start()
         }
         Sleep(100);
         }
-    
+
+
     /*STREAM2FILE * p_r2f = g_r2f_cfg.r2f;
 	while (p_r2f)
 	{
