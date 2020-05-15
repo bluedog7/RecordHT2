@@ -1776,10 +1776,16 @@ BOOL r2f_start()
                     for (i = 0; i < MAX_NUM_RUA; i++)
                     {
                         RUA* p_rua = rua_get_by_index(i);
+                        time_t rawtime;
+                        long mov_no;
+                   
 
                         if (NULL != p_rua && p_rua->pnum == atoi(row[3]))
                         {
                             fnum = i;
+                            rawtime = (const time_t)p_rua->mp4ctx->s_time;
+                            mov_no = p_rua->mp4ctx->s_time;
+
                             if (p_rua->rtsp)
                             {
                                 p_rua->rtsp->rtsp_close();
@@ -1796,8 +1802,6 @@ BOOL r2f_start()
                                 mp4_write_close(p_rua->mp4ctx);
                                
                             }
-
-                            const time_t rawtime = (const time_t)p_rua->mp4ctx->s_time;
 
                             struct tm* dt;
                             char timestr[30];
@@ -1824,9 +1828,14 @@ BOOL r2f_start()
                             printf( "[%s]\n", fname);
                             log_print(HT_LOG_INFO, "[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
                             printf("[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
-                            rua_set_idle(p_rua);
 
 
+                        char sqlcmd[256];
+                        sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%d where no=%d", mov_no,p_rua->pnum);
+                        log_print(HT_LOG_INFO,"%s\n", sqlcmd);
+                        printf("%s\n", sqlcmd);
+                        mysql_query(&mysql, sqlcmd);
+                        rua_set_idle(p_rua);
                             break;
                         }
                     }

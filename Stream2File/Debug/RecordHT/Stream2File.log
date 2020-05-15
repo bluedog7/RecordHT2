@@ -6,6 +6,6 @@ F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1714,34): warning C4101: 'cmd2' :참
 F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1714,27): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
 F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1714,42): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
 F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1714,146): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1803,34): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1804,34): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1807,34): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1808,34): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
   Stream2File.vcxproj -> F:\Source\RecordHT2\Debug\RecordHT.exe
