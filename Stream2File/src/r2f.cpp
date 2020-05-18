@@ -1705,148 +1705,156 @@ BOOL r2f_start()
         if (m_Res != NULL)
             while ((row = mysql_fetch_row(m_Res)) != NULL)
             {
-                if (strcmp(row[1], "RECORD") == 0)
+                try
                 {
-                    char rtspcmd[512];// = TEXT(row[2]);
-                    char filename[256];
-                    sprintf(rtspcmd, "%s", row[2]);
-                    // char* address[, adress2[256], user[256], passwdip[256], fileparam[256], file, filename;
-                    char* cmd, * cmd2, * cmd3, * address, user[50], passwordip[256], password2[256], * pass, * password, * add, address2[512], * fname, fname2[256];
-                    // cmd = strtok(rtspcmd, " ");
-                    address = rtspcmd;
-                    /*                   address = strtok(NULL, " ");
-                                       address = strtok(NULL, " ");
-                                       filename = strtok(NULL, " ");
-                                       filename = strtok(NULL, " ");
-                                       filename = strtok(NULL, " ");
-                                       filename = strtok(NULL, " ");
-                                       filename = strtok(NULL, " ");
-                                       filename = strtok(NULL, " ");
-                                       filename = strtok(NULL, " ");
-                                       filename = strtok(NULL, " ");*/
-                    sprintf_s(filename, "%s", row[5]);
-                    //   filename = strtok(NULL, " ");
-                   //    address = strtok(NULL, " ");
-                    sprintf(passwordip, "%s", address);
-                    password = strtok(passwordip, ":");
-                    password = strtok(NULL, ":");
-                    sprintf(user, "%s", password);
-                    password = strtok(NULL, ":");
-                    sprintf(password2, "%s", password);
-                    sprintf(passwordip, "%s", address);
-                    pass = strtok(password2, "@");
-                    add = strtok(passwordip, "@");
-                    add = strtok(NULL, " ");
-                    // opt = strtok(NULL, " ");
-                    sprintf(address2, "rtsp://%s", add);
-                    //  m_process[m_num] = atoi(row[3]);
-                    STREAM2FILE* testr2f;
-                    testr2f = (STREAM2FILE*)malloc(sizeof(STREAM2FILE));
-                    memset(testr2f, 0, sizeof(STREAM2FILE));
-                    strncpy(testr2f->url, address2, sizeof(testr2f->url) - 1);
-                    strncpy(testr2f->user, user + 2, sizeof(testr2f->user) - 1);
-                    strncpy(testr2f->pass, pass, sizeof(testr2f->pass) - 1);
-                    strncpy(testr2f->savepath, "", sizeof(testr2f->savepath) - 1);
-                    testr2f->filefmt = R2F_FMT_MP4;
-                    testr2f->framerate = 0;
-                    testr2f->recordsize = 0;
-                    testr2f->recordtime = 0;
-                    uint32 i = 0;
-                    for (int i = 0; i < strlen(filename); i++)
+                    if (strcmp(row[1], "RECORD") == 0)
                     {
-                        if (filename[i] == '/')
-                            filename[i] = '\\';
-                    }
-                    // fname = strtok(filename, ".");
-                    sprintf(fname2, "%s", filename);
-                    if (!r2f_init_ex(testr2f, fname2, atoi(row[3])))
-                    {
-                        log_print(HT_LOG_ERR, "%s, r2f_init failed, %s\r\n", __FUNCTION__, testr2f->url);
-                    }
-                    log_print(HT_LOG_INFO, "[%s],%d record process is started \n", __FUNCTION__, atoi(row[3]));
-                    printf("[%s],%d record process is started \n", __FUNCTION__, atoi(row[3]));
-                    char sqlcmd[256];
-                    sprintf_s(sqlcmd, "UPDATE cmdq SET STATUS = 'N' where seq=%s", row[0]);
-                    mysql_query(&mysql, sqlcmd);
-                }
-                else
-                {
-                    int fnum = -1;
-                    uint32 i = 0;
-                    for (i = 0; i < MAX_NUM_RUA; i++)
-                    {
-                        RUA* p_rua = rua_get_by_index(i);
-                        time_t rawtime;
-                        long mov_no;
-                   
-
-                        if (NULL != p_rua && p_rua->pnum == atoi(row[3]))
+                        char rtspcmd[512];// = TEXT(row[2]);
+                        char filename[256];
+                        sprintf(rtspcmd, "%s", row[2]);
+                        // char* address[, adress2[256], user[256], passwdip[256], fileparam[256], file, filename;
+                        char* cmd, * cmd2, * cmd3, * address, user[50], passwordip[256], password2[256], * pass, * password, * add, address2[512], * fname, fname2[256];
+                        // cmd = strtok(rtspcmd, " ");
+                        address = rtspcmd;
+                        /*                   address = strtok(NULL, " ");
+                                           address = strtok(NULL, " ");
+                                           filename = strtok(NULL, " ");
+                                           filename = strtok(NULL, " ");
+                                           filename = strtok(NULL, " ");
+                                           filename = strtok(NULL, " ");
+                                           filename = strtok(NULL, " ");
+                                           filename = strtok(NULL, " ");
+                                           filename = strtok(NULL, " ");
+                                           filename = strtok(NULL, " ");*/
+                        sprintf_s(filename, "%s", row[5]);
+                        //   filename = strtok(NULL, " ");
+                       //    address = strtok(NULL, " ");
+                        sprintf(passwordip, "%s", address);
+                        password = strtok(passwordip, ":");
+                        password = strtok(NULL, ":");
+                        sprintf(user, "%s", password);
+                        password = strtok(NULL, ":");
+                        sprintf(password2, "%s", password);
+                        sprintf(passwordip, "%s", address);
+                        pass = strtok(password2, "@");
+                        add = strtok(passwordip, "@");
+                        add = strtok(NULL, " ");
+                        // opt = strtok(NULL, " ");
+                        sprintf(address2, "rtsp://%s", add);
+                        //  m_process[m_num] = atoi(row[3]);
+                        STREAM2FILE* testr2f;
+                        testr2f = (STREAM2FILE*)malloc(sizeof(STREAM2FILE));
+                        memset(testr2f, 0, sizeof(STREAM2FILE));
+                        strncpy(testr2f->url, address2, sizeof(testr2f->url) - 1);
+                        strncpy(testr2f->user, user + 2, sizeof(testr2f->user) - 1);
+                        strncpy(testr2f->pass, pass, sizeof(testr2f->pass) - 1);
+                        strncpy(testr2f->savepath, "", sizeof(testr2f->savepath) - 1);
+                        testr2f->filefmt = R2F_FMT_MP4;
+                        testr2f->framerate = 0;
+                        testr2f->recordsize = 0;
+                        testr2f->recordtime = 0;
+                        uint32 i = 0;
+                        for (int i = 0; i < strlen(filename); i++)
                         {
-                            fnum = i;
-                            rawtime = (const time_t)p_rua->mp4ctx->s_time;
-                            mov_no = p_rua->mp4ctx->s_time;
-
-                            if (p_rua->rtsp)
-                            {
-                                p_rua->rtsp->rtsp_close();
-                                delete p_rua->rtsp;
-                                p_rua->rtsp = NULL;
-                            }
-                            if (p_rua->avictx)
-                            {
-                                avi_write_close(p_rua->avictx);
-                                p_rua->avictx = NULL;
-                            }
-                            if (p_rua->mp4ctx)
-                            {
-                                mp4_write_close(p_rua->mp4ctx);
-                               
-                            }
-
-                            struct tm* dt;
-                            char timestr[30];
-                            char buffer[30];
-
-                            p_rua->mp4ctx = NULL;
-                            dt = localtime(&rawtime);
-                            // use any strftime format spec here
-                           // strftime(timestr, sizeof(timestr), "%m%d%H%M%y", dt);
-                           // sprintf(buffer, "%s", timestr);
-                            sprintf_s(fname, "%s start time is [%d:%d:%d]", p_rua->savepath, dt->tm_hour, dt->tm_min, dt->tm_sec);
-                            //cthread[threadcnt] = new thread(ConvertThread, fname);
-                           // threadcnt++;
-                            //if (threadcnt > 255) threadcnt = 0;
-                            time_t time_now;
-                            struct tm* tm;
-
-                            time(&time_now);
-                            tm = localtime(&time_now);
-
-
-                            // ConvertThread(p_rua->savepath);
-                            log_print(HT_LOG_INFO, "[%s]", fname);
-                            printf( "[%s]\n", fname);
-                            log_print(HT_LOG_INFO, "[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
-                            printf("[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
-
-
-                        char sqlcmd[256];
-                        sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%d where no=%d", mov_no,p_rua->pnum);
-                        log_print(HT_LOG_INFO,"%s\n", sqlcmd);
-                        printf("%s\n", sqlcmd);
-                        mysql_query(&mysql, sqlcmd);
-                        rua_set_idle(p_rua);
-                            break;
+                            if (filename[i] == '/')
+                                filename[i] = '\\';
                         }
-                    }
-                    //if (fnum != -1)
-                    {
-
+                        // fname = strtok(filename, ".");
+                        sprintf(fname2, "%s", filename);
+                        if (!r2f_init_ex(testr2f, fname2, atoi(row[3])))
+                        {
+                            log_print(HT_LOG_ERR, "%s, r2f_init failed, %s\r\n", __FUNCTION__, testr2f->url);
+                        }
+                        log_print(HT_LOG_INFO, "[%s],%d record process is started \n", __FUNCTION__, atoi(row[3]));
+                        printf("[%s],%d record process is started \n", __FUNCTION__, atoi(row[3]));
                         char sqlcmd[256];
                         sprintf_s(sqlcmd, "UPDATE cmdq SET STATUS = 'N' where seq=%s", row[0]);
                         mysql_query(&mysql, sqlcmd);
-
                     }
+                    else
+                    {
+                        int fnum = -1;
+                        uint32 i = 0;
+                        for (i = 0; i < MAX_NUM_RUA; i++)
+                        {
+                            RUA* p_rua = rua_get_by_index(i);
+                            time_t rawtime;
+                            long mov_no;
+
+
+                            if (NULL != p_rua && p_rua->pnum == atoi(row[3]))
+                            {
+                                fnum = i;
+                                rawtime = (const time_t)p_rua->mp4ctx->s_time;
+                                mov_no = p_rua->mp4ctx->s_time;
+
+                                if (p_rua->rtsp)
+                                {
+                                    p_rua->rtsp->rtsp_close();
+                                    delete p_rua->rtsp;
+                                    p_rua->rtsp = NULL;
+                                }
+                                if (p_rua->avictx)
+                                {
+                                    avi_write_close(p_rua->avictx);
+                                    p_rua->avictx = NULL;
+                                }
+                                if (p_rua->mp4ctx)
+                                {
+                                    mp4_write_close(p_rua->mp4ctx);
+
+                                }
+
+                                struct tm* dt;
+                                char timestr[30];
+                                char buffer[30];
+
+                                p_rua->mp4ctx = NULL;
+                                dt = localtime(&rawtime);
+                                // use any strftime format spec here
+                               // strftime(timestr, sizeof(timestr), "%m%d%H%M%y", dt);
+                               // sprintf(buffer, "%s", timestr);
+                                sprintf_s(fname, "%s start time is [%d:%d:%d]", p_rua->savepath, dt->tm_hour, dt->tm_min, dt->tm_sec);
+                                //cthread[threadcnt] = new thread(ConvertThread, fname);
+                               // threadcnt++;
+                                //if (threadcnt > 255) threadcnt = 0;
+                                time_t time_now;
+                                struct tm* tm;
+
+                                time(&time_now);
+                                tm = localtime(&time_now);
+
+
+                                // ConvertThread(p_rua->savepath);
+                                log_print(HT_LOG_INFO, "[%s]", fname);
+                                printf("[%s]\n", fname);
+                                log_print(HT_LOG_INFO, "[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
+                                printf("[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
+
+
+                                char sqlcmd[256];
+                                sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%d where no=%d", mov_no, p_rua->pnum);
+                                log_print(HT_LOG_INFO, "%s\n", sqlcmd);
+                                printf("%s\n", sqlcmd);
+                                mysql_query(&mysql, sqlcmd);
+                                rua_set_idle(p_rua);
+                                break;
+                            }
+                        }
+                        //if (fnum != -1)
+                        {
+
+                            char sqlcmd[256];
+                            sprintf_s(sqlcmd, "UPDATE cmdq SET STATUS = 'N' where seq=%s", row[0]);
+                            mysql_query(&mysql, sqlcmd);
+
+                        }
+                    }
+                }
+                catch (int exceptionCode)
+                {
+                    log_print(HT_LOG_ERR, "Error %d in command proccesing\n", exceptionCode);
+                    printf( "Error %d in command proccesing\n", exceptionCode);
                 }
             }
         if (m_Res)
