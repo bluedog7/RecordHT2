@@ -1,14 +1,60 @@
-﻿  base64.cpp
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppClean.targets(76,5): warning : 'f:\source\recordht2\release\recordht.exe' 경로에 대한 액세스가 거부되었습니다.
+  stdafx.cpp
+  base64.cpp
+  hqueue.cpp
+  hxml.cpp
+  linked_list.cpp
+  ppstack.cpp
+  rfc_md5.cpp
+  sys_buf.cpp
+  sys_log.cpp
+  sys_os.cpp
+  util.cpp
+  word_analyse.cpp
+  xml_node.cpp
+  http_cln.cpp
+  http_mjpeg_cln.cpp
+  http_parse.cpp
+  main.cpp
+  audio_decoder.cpp
+  audio_encoder.cpp
+  avcodec_mutex.cpp
+  rtmp_cln.cpp
+  컴파일하고 있습니다...
+  aac_rtp_rx.cpp
+  bit_vector.cpp
+  h264_rtp_rx.cpp
+  h264_util.cpp
+  h265_rtp_rx.cpp
+  h265_util.cpp
+  media_util.cpp
+  mjpeg_rtp_rx.cpp
+  mjpeg_tables.cpp
+  mpeg4.cpp
+  mpeg4_rtp_rx.cpp
+  pcm_rtp_rx.cpp
+  rtp_rx.cpp
+  rtsp_backchannel.cpp
+  rtsp_cln.cpp
+  rtsp_parse.cpp
+  rtsp_rcua.cpp
+  rtsp_util.cpp
+  avi_read.cpp
+  avi_write.cpp
+  컴파일하고 있습니다...
+  mp4_write.cpp
   r2f.cpp
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1757,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1654,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1668,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1716,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1716,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1716,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1716,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1809,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1810,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1867,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1757,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1771,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1819,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1819,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1819,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1819,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1919,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1920,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
+  r2f_cfg.cpp
+  r2f_rua.cpp
   amf.c
   hashswf.c
   log.c
@@ -16,7 +62,7 @@ F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1810,38): warning C4101: 'buffer' :�
   rtmp.c
   코드를 생성하고 있습니다.
   Previous IPDB not found, fall back to full compilation.
-  All 581 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 631 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   코드를 생성했습니다.
 zlibstat.lib(adler32.obj) : warning LNK4099: 'zlibstat.pdb' PDB를 'zlibstat.lib(adler32.obj)' 또는 'F:\Source\RecordHT2\Release\zlibstat.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 zlibstat.lib(crc32.obj) : warning LNK4099: 'zlibstat.pdb' PDB를 'zlibstat.lib(crc32.obj)' 또는 'F:\Source\RecordHT2\Release\zlibstat.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.

@@ -29,7 +29,8 @@ extern "C" {
 MP4CTX * mp4_write_open(char * filename);
 void     mp4_write_close(MP4CTX * p_ctx);
 void     mp4_set_video_info(MP4CTX * p_ctx, int fps, int width, int height, const char fcc[4]);
-void     mp4_set_audio_info(MP4CTX * p_ctx, int chns, int rate, uint16 fmt, uint8 * extra, int extra_len);
+void     mp4_set_audio_info(MP4CTX * p_ctx, int chns, int rate, uint16 fmt);
+void     mp4_set_audio_extra_info(MP4CTX * p_ctx, uint8 * extra, int extra_len);
 int      mp4_write_header(MP4CTX * p_ctx);
 int      mp4_update_header(MP4CTX * p_ctx);
 int      mp4_write_audio(MP4CTX * p_ctx, void * p_data, uint32 len);

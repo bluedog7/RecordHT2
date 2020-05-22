@@ -89,8 +89,8 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;HT_STATIC;ZLIB_WINAPI;MP4_FORMAT;RTMP_STREAM;AUDIO_CONV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\;.\bm;.\rtp;.\rtsp;.\src;.\rtmp;.\librtmp;.\media;.\gpac\include;.\zlib\include;.\openssl\include;.\openssl\include\win;.\ffmpeg\include;.\mysql-5.7.27-win32\mysql-5.7.27-win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;HT_STATIC;ZLIB_WINAPI;MP4_FORMAT;RTMP_STREAM;MJPEG_STREAM;AUDIO_CONV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;.\bm;.\http;.\rtp;.\rtsp;.\src;.\rtmp;.\librtmp;.\media;.\gpac\include;.\zlib\include;.\openssl\include;.\openssl\include\win;.\ffmpeg\include;.\mysql-5.7.27-win32\mysql-5.7.27-win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4819</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
@@ -130,8 +130,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;HT_STATIC;ZLIB_WINAPI;MP4_FORMAT;RTMP_STREAM;AUDIO_CONV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\;.\bm;.\rtp;.\rtsp;.\src;.\rtmp;.\librtmp;.\media;.\gpac\include;.\zlib\include;.\openssl\include;.\openssl\include\win;.\ffmpeg\include;.\mysql-5.7.27-win32\mysql-5.7.27-win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;HT_STATIC;ZLIB_WINAPI;MP4_FORMAT;RTMP_STREAM;MJPEG_STREAM;AUDIO_CONV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;.\bm;.\rtp;.\rtsp;.\http;.\src;.\rtmp;.\librtmp;.\media;.\gpac\include;.\zlib\include;.\openssl\include;.\openssl\include\win;.\ffmpeg\include;.\mysql-5.7.27-win32\mysql-5.7.27-win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -183,6 +183,9 @@
     <ClCompile Include="bm\util.cpp" />
     <ClCompile Include="bm\word_analyse.cpp" />
     <ClCompile Include="bm\xml_node.cpp" />
+    <ClCompile Include="http\http_cln.cpp" />
+    <ClCompile Include="http\http_mjpeg_cln.cpp" />
+    <ClCompile Include="http\http_parse.cpp" />
     <ClCompile Include="librtmp\amf.c" />
     <ClCompile Include="librtmp\hashswf.c" />
     <ClCompile Include="librtmp\log.c" />

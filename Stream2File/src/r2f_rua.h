@@ -32,6 +32,9 @@
 #ifdef RTMP_STREAM
 #include "rtmp_cln.h"
 #endif
+#ifdef MJPEG_STREAM
+#include "http_mjpeg_cln.h"
+#endif
 
 #ifdef DEMO
 #define MAX_NUM_RUA			2
@@ -47,7 +50,8 @@ typedef struct
     uint32  used_flag : 1;      // used flag
     uint32  rtsp_flag : 1;      // rtsp stream
     uint32  rtmp_flag : 1;      // rtmp stream
-	uint32  reserved  : 29;     // reserved
+    uint32  mjpeg_flag: 1;      // mjpeg stream
+	uint32  reserved  : 28;     // reserved
 	
     char    url[256];           // url address
     char    user[32];           // login user
@@ -55,7 +59,6 @@ typedef struct
     char    cfgpath[256];       // recording configured save path    
     char    savepath[256];      // recording save full path
     int     filefmt;            // R2F_FMT_AVI or R2F_FMT_MP4
-    int     pnum;               //  Process number For Record Server 
     uint32  framerate;          // video recording frame rate
     time_t  starttime;          // start recording time, unit is second
     uint32  recordsize;         // Recording size configured for each recording, unit is kbyte
@@ -65,11 +68,14 @@ typedef struct
 #ifdef RTMP_STREAM
     CRtmpClient * rtmp;         // rtmp client
 #endif
+#ifdef MJPEG_STREAM
+    CHttpMjpeg  * mjpeg;        // mjpeg client
+#endif
 
     AVICTX* avictx;             // avi context
 #ifdef MP4_FORMAT
     MP4CTX      * mp4ctx;       // mp4 context
-
+    int           pnum;         // process number
 #ifdef AUDIO_CONV
     CAudioDecoder * adecoder;   // audio decoder
     CAudioEncoder * aencoder;   // audio encoder

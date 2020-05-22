@@ -110,6 +110,7 @@ typedef struct http_req
 	int		    rcv_dlen;
 	int		    hdr_len;
 	int		    ctt_len;
+	char        boundary[256];
 	char *	    p_rbuf;				// --> rcv_buf or dyn_recv_buf
 	int		    mlen;				// = sizeof(rcv_buf) or size of dyn_recv_buf
 
