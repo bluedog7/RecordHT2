@@ -67,7 +67,7 @@ int main(int argc, char * argv[])
     char lfname[256];
     network_init();
     if (argc < 2) return -1;
-    sprintf(lfname, "ibstrecord_%s.log", argv[1]);
+    sprintf(lfname, ".\\LOG\\ibstrecord_%s.log", argv[1]);
 #if __LINUX_OS__
 
 #if !defined(DEBUG) && !defined(_DEBUG)

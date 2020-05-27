@@ -1706,7 +1706,7 @@ BOOL r2f_init_ex(STREAM2FILE* p_r2f, char* strfilename, int pnum)
 
 BOOL r2f_start(char * pid)
 {
-    printf("IBST Record Server V%d.%d\r\n", R2F_MAJOR_VERSION, R2F_MINOR_VERSION);
+    printf("IBST Record Server V%d.%d[for %s]\r\n", R2F_MAJOR_VERSION, R2F_MINOR_VERSION,pid);
     if (!r2f_read_config())
     {
         log_print(HT_LOG_ERR, "%s, r2f_read_config failed\r\n", __FUNCTION__);
@@ -1714,7 +1714,7 @@ BOOL r2f_start(char * pid)
     }
     char lfname[256];
 
-    sprintf(lfname, "ibstrecord_%s.log", pid);
+    sprintf(lfname, ".\\log\\ibstrecord_%s.log", pid);
     if (g_r2f_cfg.log_enable)
 	{
 		log_init(lfname);
