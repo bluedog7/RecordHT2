@@ -31,6 +31,9 @@
     <Filter Include="media">
       <UniqueIdentifier>{fca58385-19e9-4393-a2a2-e5f7b019951e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="http">
+      <UniqueIdentifier>{37dd5c10-7506-4462-8664-ecd489412ea0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -38,6 +41,15 @@
     </ClInclude>
     <ClInclude Include="rtmp\rtmp_cln.h">
       <Filter>rtmp</Filter>
+    </ClInclude>
+    <ClInclude Include="http\http_cln.h">
+      <Filter>http</Filter>
+    </ClInclude>
+    <ClInclude Include="http\http_parse.h">
+      <Filter>http</Filter>
+    </ClInclude>
+    <ClInclude Include="http\http_mjpeg_cln.h">
+      <Filter>http</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -181,6 +193,15 @@
     </ClCompile>
     <ClCompile Include="media\avcodec_mutex.cpp">
       <Filter>media</Filter>
+    </ClCompile>
+    <ClCompile Include="http\http_cln.cpp">
+      <Filter>http</Filter>
+    </ClCompile>
+    <ClCompile Include="http\http_parse.cpp">
+      <Filter>http</Filter>
+    </ClCompile>
+    <ClCompile Include="http\http_mjpeg_cln.cpp">
+      <Filter>http</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

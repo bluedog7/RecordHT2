@@ -88,10 +88,6 @@ typedef struct mp4_file_context
 
 	uint32		s_time;				    // Start recording time = first packet write time
 	uint32		e_time;				    // The time when a package was recently written
-	
-    // Auxiliary analysis
-	uint32		prev_ts;			    // Last timestamp
-	uint32		delta_ts[20];		    // Calculate fps values
 } MP4CTX;
 
 

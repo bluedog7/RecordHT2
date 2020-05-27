@@ -1,0 +1,115 @@
+[2020-05-27 12:36:51] : [INFO] net_buf_init, num = 400
+[2020-05-27 12:36:51] : [INFO] hdrv_buf_init, num = 3200
+[2020-05-27 12:36:51] : [INFO] [r2f_start],29130 record process is started 
+[2020-05-27 12:36:51] : [DEBUG] r2f_notify_callback, event = 1
+[2020-05-27 12:36:51] : [DEBUG] TX >> OPTIONS rtsp://168.131.101.178:554/H.264/media.smp RTSP/1.0
+CSeq: 1
+User-Agent: happytimesoft rtsp client
+
+
+[2020-05-27 12:36:52] : [DEBUG] RX << RTSP/1.0 401 Unauthorized
+CSeq: 1
+Date: Sat, 28 Apr 2018 23:28:16 GMT
+Expires: Sat, 28 Apr 2018 23:28:16 GMT
+Cache-Control: must-revalidate
+WWW-Authenticate: Digest realm="iPOLiS", nonce="D51C6803F5C3A5928AAF9B1FB182BA3F"
+
+
+[2020-05-27 12:36:52] : [DEBUG] TX >> OPTIONS rtsp://168.131.101.178:554/H.264/media.smp RTSP/1.0
+CSeq: 2
+Authorization: Digest username="admin",realm="iPOLiS",nonce="D51C6803F5C3A5928AAF9B1FB182BA3F",uri="rtsp://168.131.101.178:554/H.264/media.smp",response="ad677287b1a2d650b2374648c70393af",algorithm="MD5"
+User-Agent: happytimesoft rtsp client
+
+
+[2020-05-27 12:36:52] : [DEBUG] RX << RTSP/1.0 200 OK
+CSeq: 2
+Date: Sat, 28 Apr 2018 23:28:16 GMT
+Expires: Sat, 28 Apr 2018 23:28:16 GMT
+Cache-Control: must-revalidate
+Public: DESCRIBE, SETUP, TEARDOWN, PLAY, PAUSE, OPTIONS, GET_PARAMETER, SET_PARAMETER
+
+
+[2020-05-27 12:36:52] : [DEBUG] TX >> DESCRIBE rtsp://168.131.101.178:554/H.264/media.smp RTSP/1.0
+CSeq: 3
+Authorization: Digest username="admin",realm="iPOLiS",nonce="D51C6803F5C3A5928AAF9B1FB182BA3F",uri="rtsp://168.131.101.178:554/H.264/media.smp",response="fc7afe15d981767816ae814a3be9acc0",algorithm="MD5"
+Accept: application/sdp
+User-Agent: happytimesoft rtsp client
+
+
+[2020-05-27 12:36:52] : [DEBUG] RX << RTSP/1.0 200 OK
+CSeq: 3
+Date: Sat, 28 Apr 2018 23:28:16 GMT
+Expires: Sat, 28 Apr 2018 23:28:16 GMT
+Cache-Control: must-revalidate
+Content-Base: rtsp://168.131.101.178:554/H.264/media.smp
+Content-Type: application/sdp
+Content-Length: 628
+x-Accept-Retransmit: our-retransmit
+x-Accept-Dynamic-Rate: 1
+
+
+[2020-05-27 12:36:52] : [DEBUG] v=0
+o=- 0 0 IN IP4 118.39.27.251
+s=Media Presentation
+i=samsung
+c=IN IP4 0.0.0.0
+b=AS:2632
+t=0 0
+a=control:rtsp://168.131.101.178:554/H.264/media.smp
+a=range:npt=now-
+m=video 43200 RTP/AVP 98
+b=AS:2560
+a=rtpmap:98 H264/90000
+a=control:rtsp://168.131.101.178:554/H.264/media.smp/trackID=v
+a=cliprect:0,0,720,1280
+a=framesize:98 1280-720
+a=framerate:30.0
+a=fmtp:98 packetization-mode=1;profile-level-id=640028;sprop-parameter-sets=Z2QAKKy0AoAtyA==,aO4BniwA
+m=application 43204 RTP/AVP 107
+b=AS:8
+a=rtpmap:107 vnd.onvif.metadata/90000
+a=control:rtsp://168.131.101.178:554/H.264/media.smp/trackID=m
+a=recvonly
+
+[2020-05-27 12:36:52] : [DEBUG] TX >> SETUP rtsp://168.131.101.178:554/H.264/media.smp/trackID=v RTSP/1.0
+CSeq: 4
+Authorization: Digest username="admin",realm="iPOLiS",nonce="D51C6803F5C3A5928AAF9B1FB182BA3F",uri="rtsp://168.131.101.178:554/H.264/media.smp",response="b345b229a6686d1a2e23f330524d8531",algorithm="MD5"
+Transport: RTP/AVP/TCP;unicast;interleaved=0-1
+User-Agent: happytimesoft rtsp client
+
+
+[2020-05-27 12:36:52] : [DEBUG] RX << RTSP/1.0 200 OK
+CSeq: 4
+Date: Sat, 28 Apr 2018 23:28:16 GMT
+Expires: Sat, 28 Apr 2018 23:28:16 GMT
+Cache-Control: must-revalidate
+Session: 47141;timeout=60
+Transport: RTP/AVP/TCP;unicast;interleaved=0-1
+
+
+[2020-05-27 12:36:52] : [DEBUG] TX >> PLAY rtsp://168.131.101.178:554/H.264/media.smp RTSP/1.0
+CSeq: 5
+Authorization: Digest username="admin",realm="iPOLiS",nonce="D51C6803F5C3A5928AAF9B1FB182BA3F",uri="rtsp://168.131.101.178:554/H.264/media.smp",response="a4854da3285e2533dc64816ae6206474",algorithm="MD5"
+Session: 47141
+Range: npt=0.0-
+User-Agent: happytimesoft rtsp client
+
+
+[2020-05-27 12:36:52] : [DEBUG] RX << RTSP/1.0 200 OK
+CSeq: 5
+Date: Sat, 28 Apr 2018 23:28:16 GMT
+Expires: Sat, 28 Apr 2018 23:28:16 GMT
+Cache-Control: must-revalidate
+Session: 47141;timeout=60
+RTP-Info: url=rtsp://168.131.101.178:554/H.264/media.smp/trackID=v;seq=53919;rtptime=1725403765
+
+
+[2020-05-27 12:36:52] : [DEBUG] CRtspClient::rtsp_play_res, session timeout : 60
+[2020-05-27 12:36:52] : [DEBUG] r2f_notify_callback, event = 3
+[2020-05-27 12:36:52] : [INFO] mp4_parse_video_size, H264 width[1280],height[720]
+[2020-05-27 12:36:52] : [DEBUG] mp4_calc_fps, stime=241848343, etime=241848906, frames=30, fps=53
+[2020-05-27 12:37:12] : [DEBUG] CRtspClient::tcp_rx_thread, exit
+[2020-05-27 12:37:12] : [DEBUG] mp4_write_close, stime=241848343, etime=241868812, frames=627, fps=31
+[2020-05-27 12:37:12] : [DEBUG] mp4_write_close, file=D:\simprec_use\simprec_use\mov\1384472501\1\10009_1_1590550578.mp4,stime=241848343, etime=241868812, frames=627, fps=31
+[2020-05-27 12:37:12] : [INFO] [D:\simprec_use\simprec_use\mov\1384472501\1\10009_1_1590550578.mp4 start time is [13:5:43]][2020-05-27 12:37:12] : [INFO] [r2f_start],[12:37:12] 29130 record process is terminated 
+[2020-05-27 12:37:12] : [INFO] UPDATE kn_simprec_mov SET rtsp_start=241848343 where no=29130

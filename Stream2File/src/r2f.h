@@ -49,13 +49,14 @@ typedef struct
 extern "C" {
 #endif
 
-BOOL r2f_start();
+BOOL r2f_start(char *);
 void r2f_stop();
 int  r2f_record_aac(RUA * p_rua, uint8 * pdata, int len);
 int  r2f_record_audio(RUA * p_rua, uint8 * pdata, int len);
 int  r2f_record_video(RUA * p_rua, uint8 * pdata, int len, uint32 ts);
 BOOL r2f_switch_check(RUA * p_rua); 
 void r2f_file_switch(RUA * p_rua);
+int  r2f_notify_callback(int event, void * puser);
 
 
 #ifdef __cplusplus

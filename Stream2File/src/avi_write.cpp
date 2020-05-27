@@ -271,152 +271,7 @@ write_err:
 	return NULL;
 }
 
-int avi_write_video_start(AVICTX * p_ctx, uint32 len, int b_key)
-{
-	int ret = -1;
-
-    if (NULL == p_ctx)
-	{
-		return -1;
-    }
-    
-    sys_os_mutex_enter(p_ctx->mutex);
-    
-	if (NULL == p_ctx || NULL == p_ctx->f)
-	{
-		return -1;
-    }
-
-	int i_pos = ftell(p_ctx->f);
-
-	avi_write_fourcc(p_ctx, "00dc");
-	avi_write_uint32(p_ctx, len);
-
-	// Write index, memory mode and temporary file
-	if (p_ctx->ctxf_idx_m == 1)
-	{
-		if (p_ctx->i_idx_max <= p_ctx->i_idx)
-		{
-			p_ctx->i_idx_max += 1000;
-			p_ctx->idx = (int *)realloc(p_ctx->idx, p_ctx->i_idx_max * 16);
-			if (p_ctx->idx == NULL)
-			{
-				log_print(HT_LOG_ERR, "%s, realloc ret null!!!\r\n", __FUNCTION__);
-			}
-		}
-
-		if (p_ctx->idx)
-		{
-			memcpy(&p_ctx->idx[4*p_ctx->i_idx+0], "00dc", 4);
-			avi_set_dw(&p_ctx->idx[4*p_ctx->i_idx+1], b_key ? AVIIF_KEYFRAME : 0);
-			avi_set_dw(&p_ctx->idx[4*p_ctx->i_idx+2], i_pos);
-			avi_set_dw(&p_ctx->idx[4*p_ctx->i_idx+3], len);
-		
-			p_ctx->i_idx++;
-		}
-	}
-	else if (p_ctx->idx_f)
-	{
-		memcpy(&p_ctx->idx_fix[p_ctx->idx_fix_off + 0], "00dc", 4);
-		avi_set_dw(&p_ctx->idx_fix[p_ctx->idx_fix_off + 1], b_key ? AVIIF_KEYFRAME : 0);
-		avi_set_dw(&p_ctx->idx_fix[p_ctx->idx_fix_off + 2], i_pos);
-		avi_set_dw(&p_ctx->idx_fix[p_ctx->idx_fix_off + 3], len);
-
-		p_ctx->idx_fix_off += 4;
-		
-		if (p_ctx->idx_fix_off == (sizeof(p_ctx->idx_fix) / sizeof(int)))
-		{
-			if (fwrite(p_ctx->idx_fix, sizeof(p_ctx->idx_fix), 1, p_ctx->idx_f) != 1)
-			{
-				goto w_err;
-			}
-			
-			fflush(p_ctx->idx_f);
-
-			p_ctx->idx_fix_off = 0;
-		}
-
-		p_ctx->i_idx++;
-	}
-
-	p_ctx->i_frame_video++;
-	
-	return 0;
-
-w_err:
-
-	log_print(HT_LOG_ERR, "%s, ret[%d] err[%d] [%s]!!!\r\n", __FUNCTION__, ret, errno, strerror(errno));
-
-	if (p_ctx->f)
-	{
-		fclose(p_ctx->f);
-		p_ctx->f = NULL;
-	}
-	
-	if (p_ctx->idx_f)
-	{
-		fclose(p_ctx->idx_f);
-		p_ctx->idx_f = NULL;
-	}
-
-	sys_os_mutex_leave(p_ctx->mutex);
-
-	return -1;
-}
-
-int avi_write_video_data(AVICTX * p_ctx, void * p_data, uint32 len)
-{
-	int ret = fwrite(p_data, len, 1, p_ctx->f);
-	if (ret != 1)
-	{
-		goto w_err;
-    }
-    
-	fflush(p_ctx->f);
-
-	return len;
-
-w_err:
-
-	log_print(HT_LOG_ERR, "%s, ret[%d]err[%d][%s]!!!\r\n", __FUNCTION__, ret, errno, strerror(errno));
-
-	if (p_ctx->f)
-	{
-		fclose(p_ctx->f);
-		p_ctx->f = NULL;
-	}
-	
-	if (p_ctx->idx_f)
-	{
-		fclose(p_ctx->idx_f);
-		p_ctx->idx_f = NULL;
-	}
-
-	sys_os_mutex_leave(p_ctx->mutex);
-
-	return -1;
-}
-
-int avi_write_video_end(AVICTX * p_ctx, int wlen)
-{
-	if (p_ctx->f == NULL)
-	{
-		return -1;
-    }
-    
-	if (wlen & 0x01)	/* pad */
-	{
-		fputc(0, p_ctx->f);
-    }
-    
-	int ret = ftell(p_ctx->f);
-
-	sys_os_mutex_leave(p_ctx->mutex);
-	
-	return ret;
-}
-
-int avi_write_video(AVICTX * p_ctx, void * p_data, uint32 len, int b_key)
+int avi_write_video_frame(AVICTX * p_ctx, void * p_data, uint32 len, int b_key)
 {
 	int ret = -1;
 
@@ -424,8 +279,6 @@ int avi_write_video(AVICTX * p_ctx, void * p_data, uint32 len, int b_key)
     {
         return -1;
     }
-    
-    sys_os_mutex_enter(p_ctx->mutex);
     
 	if (NULL == p_ctx || NULL == p_ctx->f)
 	{
@@ -527,10 +380,245 @@ w_err:
 			p_ctx->idx_f = NULL;
 		}
 	}
-
-	sys_os_mutex_leave(p_ctx->mutex);
 	
 	return ret;
+}
+
+int avi_write_h264_nalu(AVICTX * p_ctx)
+{
+    if (p_ctx->sps_len > 0)
+    {
+        if (avi_write_video_frame(p_ctx, p_ctx->sps, p_ctx->sps_len, 0) > 0)
+        {
+            p_ctx->i_frame_video--;
+        }
+    }
+
+    if (p_ctx->pps_len > 0)
+    {
+        if (avi_write_video_frame(p_ctx, p_ctx->pps, p_ctx->pps_len, 0) > 0)
+        {
+            p_ctx->i_frame_video--;
+        }
+    }
+
+	p_ctx->ctxf_nalu = 1;
+
+	return 0;
+}
+
+int avi_write_h265_nalu(AVICTX * p_ctx)
+{
+    if (p_ctx->vps_len > 0)
+    {
+        if (avi_write_video_frame(p_ctx, p_ctx->vps, p_ctx->vps_len, 0) > 0)
+        {
+            p_ctx->i_frame_video--;
+        }
+    }
+
+    if (p_ctx->sps_len > 0)
+    {
+        if (avi_write_video_frame(p_ctx, p_ctx->sps, p_ctx->sps_len, 0) > 0)
+        {
+            p_ctx->i_frame_video--;
+        }
+    }
+
+    if (p_ctx->pps_len > 0)
+    {
+        if (avi_write_video_frame(p_ctx, p_ctx->pps, p_ctx->pps_len, 0) > 0)
+        {
+            p_ctx->i_frame_video--;
+        }
+    }
+
+    p_ctx->ctxf_nalu = 1;
+    
+	return 0;
+}
+
+int avi_write_h264(AVICTX * p_ctx, void * p_data, uint32 len, int b_key)
+{
+    uint8 nalu = (((uint8 *)p_data)[4] & 0x1f);
+
+    if (H264_NAL_SPS == nalu)
+    {
+        if (0 == p_ctx->sps_len)
+        {
+            memcpy(p_ctx->sps, (uint8 *)p_data+4, len-4);
+            p_ctx->sps_len = len-4;
+
+            if (p_ctx->sps_len > 0 && p_ctx->pps_len > 0)
+            {
+                if (avi_write_h264_nalu(p_ctx) < 0)
+                {
+                    log_print(HT_LOG_ERR, "%s, avi_write_h264_nalu failed\r\n", __FUNCTION__);
+                    return -1;
+                }
+            }
+        }
+    }
+    else if (H264_NAL_PPS == nalu)
+    {
+        if (0 == p_ctx->pps_len)
+        {
+            memcpy(p_ctx->pps, (uint8 *)p_data+4, len-4);
+            p_ctx->pps_len = len-4;
+
+            if (p_ctx->sps_len > 0 && p_ctx->pps_len > 0)
+            {
+                if (avi_write_h264_nalu(p_ctx) < 0)
+                {
+                    log_print(HT_LOG_ERR, "%s, avi_write_h264_nalu failed\r\n", __FUNCTION__);
+                    return -1;
+                }
+            }
+        }
+    }
+    else if (H264_NAL_SEI == nalu)
+    {
+    }
+    else if (p_ctx->ctxf_nalu)
+    {
+        if (!p_ctx->ctxf_iframe)
+        {
+            if (b_key)
+            {
+                if (avi_write_video_frame(p_ctx, p_data, len, b_key) < 0)
+                {
+                    log_print(HT_LOG_ERR, "%s, avi_write_video_frame failed\r\n", __FUNCTION__);
+                    return -1;
+                }
+                else
+                {
+                    p_ctx->ctxf_iframe = 1;
+                }
+            }
+        }
+        else
+        {
+            if (avi_write_video_frame(p_ctx, p_data, len, b_key) < 0)
+            {
+                log_print(HT_LOG_ERR, "%s, avi_write_video_frame failed\r\n", __FUNCTION__);
+                return -1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int avi_write_h265(AVICTX * p_ctx, void * p_data, uint32 len, int b_key)
+{
+    uint8 nalu = ((((uint8 *)p_data)[4] >> 1) & 0x3F);
+
+    if (HEVC_NAL_SPS == nalu)
+    {
+        if (0 == p_ctx->sps_len)
+        {
+            memcpy(p_ctx->sps, (uint8 *)p_data+4, len-4);
+            p_ctx->sps_len = len-4;
+
+            if (p_ctx->sps_len > 0 && p_ctx->pps_len > 0 && p_ctx->vps_len > 0)
+            {
+                if (avi_write_h265_nalu(p_ctx) < 0)
+                {
+                    log_print(HT_LOG_ERR, "%s, avi_write_h265_nalu failed\r\n", __FUNCTION__);
+                    return -1;
+                }
+            }
+        }
+    }
+    else if (HEVC_NAL_PPS == nalu)
+    {
+        if (0 == p_ctx->pps_len)
+        {
+            memcpy(p_ctx->pps, (uint8 *)p_data+4, len-4);
+            p_ctx->pps_len = len-4;
+
+            if (p_ctx->sps_len > 0 && p_ctx->pps_len > 0 && p_ctx->vps_len > 0)
+            {
+                if (avi_write_h265_nalu(p_ctx) < 0)
+                {
+                    log_print(HT_LOG_ERR, "%s, avi_write_h265_nalu failed\r\n", __FUNCTION__);
+                    return -1;
+                }
+            }
+        }
+    }
+    else if (HEVC_NAL_VPS == nalu)
+    {
+        if (0 == p_ctx->vps_len)
+        {
+            memcpy(p_ctx->vps, (uint8 *)p_data+4, len-4);
+            p_ctx->vps_len = len-4;
+
+            if (p_ctx->sps_len > 0 && p_ctx->pps_len > 0 && p_ctx->vps_len > 0)
+            {
+                if (avi_write_h265_nalu(p_ctx) < 0)
+                {
+                    log_print(HT_LOG_ERR, "%s, avi_write_h265_nalu failed\r\n", __FUNCTION__);
+                    return -1;
+                }
+            }
+        }
+    }
+    else if (HEVC_NAL_SEI_PREFIX == nalu || HEVC_NAL_SEI_SUFFIX == nalu)
+    {
+    }
+    else if (p_ctx->ctxf_nalu)
+    {
+        if (!p_ctx->ctxf_iframe)
+        {
+            if (b_key)
+            {
+                if (avi_write_video_frame(p_ctx, p_data, len, b_key) < 0)
+                {
+                    log_print(HT_LOG_ERR, "%s, avi_write_video_frame failed\r\n", __FUNCTION__);
+                    return -1;
+                }
+                else
+                {
+                    p_ctx->ctxf_iframe = 1;
+                }
+            }
+        }
+        else
+        {
+            if (avi_write_video_frame(p_ctx, p_data, len, b_key) < 0)
+            {
+                log_print(HT_LOG_ERR, "%s, avi_write_video_frame failed\r\n", __FUNCTION__);
+                return -1;
+            }
+        }
+    }
+
+    return 0;
+}
+
+int avi_write_video(AVICTX * p_ctx, void * p_data, uint32 len, int b_key)
+{
+    int ret = 0;
+    
+    sys_os_mutex_enter(p_ctx->mutex);
+    
+    if (memcmp(p_ctx->v_fcc, "H264", 4) == 0)
+    {
+        ret = avi_write_h264(p_ctx, p_data, len, b_key);
+    }
+    else if (memcmp(p_ctx->v_fcc, "H265", 4) == 0)
+    {
+        ret = avi_write_h265(p_ctx, p_data, len, b_key);
+    }
+    else
+    {
+        ret = avi_write_video_frame(p_ctx, p_data, len, b_key);
+    }
+
+    sys_os_mutex_leave(p_ctx->mutex);
+    
+    return ret;
 }
 
 int avi_write_audio(AVICTX * p_ctx, void * p_data, uint32 len)
@@ -540,6 +628,18 @@ int avi_write_audio(AVICTX * p_ctx, void * p_data, uint32 len)
     if (NULL == p_ctx)
     {
         return -1;
+    }
+
+    if (p_ctx->ctxf_video)
+    {
+        if (memcmp(p_ctx->v_fcc, "H264", 4) == 0 || 
+            memcmp(p_ctx->v_fcc, "H265", 4) == 0)
+        {
+            if (!p_ctx->ctxf_iframe)
+            {
+                return 0;
+            }
+        }
     }
     
     sys_os_mutex_enter(p_ctx->mutex);
@@ -653,6 +753,16 @@ void avi_write_close(AVICTX * p_ctx)
 	avi_end(p_ctx);
 	avi_free_idx(p_ctx);
 
+    if (p_ctx->v_extra)
+    {
+        free(p_ctx->v_extra);
+    }
+
+    if (p_ctx->a_extra)
+    {
+        free(p_ctx->a_extra);
+    }
+
     sys_os_mutex_leave(p_ctx->mutex);
     
 	sys_os_destroy_sig_mutex(p_ctx->mutex);
@@ -670,15 +780,39 @@ void avi_set_video_info(AVICTX * p_ctx, int fps, int width, int height, const ch
 	p_ctx->ctxf_video = 1;
 }
 
-void avi_set_audio_info(AVICTX * p_ctx, int chns, int rate, uint16 fmt, uint8 * extra, int extra_len)
+void avi_set_video_extra_info(AVICTX * p_ctx, uint8 * extra, int extra_len)
+{
+    if (NULL != extra && extra_len > 0)
+    {
+        p_ctx->v_extra = (uint8*) malloc(extra_len);
+    	if (p_ctx->v_extra)
+    	{
+    	    memcpy(p_ctx->v_extra, extra, extra_len);
+    	    p_ctx->v_extra_len = extra_len;
+        }
+    }
+}
+
+void avi_set_audio_info(AVICTX * p_ctx, int chns, int rate, uint16 fmt)
 {
 	p_ctx->a_chns = chns;
 	p_ctx->a_rate = rate;
 	p_ctx->a_fmt = fmt;
-	p_ctx->a_extra = extra;
-	p_ctx->a_extra_len = extra_len;
-
+    
 	p_ctx->ctxf_audio = 1;
+}
+
+void avi_set_audio_extra_info(AVICTX * p_ctx, uint8 * extra, int extra_len)
+{
+    if (NULL != extra && extra_len > 0)
+    {
+        p_ctx->a_extra = (uint8*) malloc(extra_len);
+    	if (p_ctx->a_extra)
+    	{
+    	    memcpy(p_ctx->a_extra, extra, extra_len);
+    	    p_ctx->a_extra_len = extra_len;
+        }
+    }
 }
 
 void avi_build_video_hdr(AVICTX * p_ctx)
@@ -688,7 +822,7 @@ void avi_build_video_hdr(AVICTX * p_ctx)
 		return;
     }
     
-	if (p_ctx->s_time < p_ctx->e_time && p_ctx->i_frame_video > 1)
+	if (p_ctx->s_time < p_ctx->e_time && p_ctx->i_frame_video >= 30)
 	{
 		// Final correction to the actual frame rate
 		float fps = (float) (p_ctx->i_frame_video * 1000.0) / (p_ctx->e_time - p_ctx->s_time);
@@ -827,16 +961,29 @@ int avi_write_header(AVICTX * p_ctx)
 	int s_v_ll = strl_v_len + 12;
 	int s_a_ll = strl_a_len + 12;
 
-	int extra_len = 0;
-	int pad_len = 0;
+	int a_extra_len = 0;
+	int a_pad_len = 0;
+
+	int v_extra_len = 0;
+	int v_pad_len = 0;
 
 	if (p_ctx->a_extra && p_ctx->a_extra_len)
 	{
-	    extra_len = p_ctx->a_extra_len;
+	    a_extra_len = p_ctx->a_extra_len;
 
-	    if (p_ctx->a_extra_len & 0x01)
+	    if (a_extra_len & 0x01)
 	    {
-	        pad_len = 1;
+	        a_pad_len = 1;
+	    }
+	}
+
+    if (p_ctx->v_extra && p_ctx->v_extra_len)
+	{
+	    v_extra_len = p_ctx->v_extra_len;
+
+	    if (v_extra_len & 0x01)
+	    {
+	        v_pad_len = 1;
 	    }
 	}
 
@@ -848,11 +995,11 @@ int avi_write_header(AVICTX * p_ctx)
 	
 	if (p_ctx->ctxf_audio == 1)
 	{
-		avi_write_uint32(p_ctx,  4 + avih_len + s_v_ll + s_a_ll + extra_len + pad_len);	// List data length + 4("hdrl")
+		avi_write_uint32(p_ctx,  4 + avih_len + s_v_ll + v_extra_len + v_pad_len + s_a_ll + a_extra_len + a_pad_len);	// List data length + 4("hdrl")
 	}	
 	else
 	{
-		avi_write_uint32(p_ctx,  4 + avih_len + s_v_ll);	// List data length + 4("hdrl")
+		avi_write_uint32(p_ctx,  4 + avih_len + s_v_ll + v_extra_len + v_pad_len);	// List data length + 4("hdrl")
     }
     
 	avi_write_fourcc(p_ctx, "hdrl");
@@ -884,14 +1031,14 @@ int avi_write_header(AVICTX * p_ctx)
 		p_ctx->avi_hdr.dwStreams		= 1;						// The number of streams included in this file
     }
     
-	p_ctx->avi_hdr.dwSuggestedBufferSize= 1000000;					// It is recommended to read the cache size of this file (should be able to accommodate the largest block)
+	p_ctx->avi_hdr.dwSuggestedBufferSize= 1024*1024;			    // It is recommended to read the cache size of this file (should be able to accommodate the largest block)
 	p_ctx->avi_hdr.dwWidth				= p_ctx->v_width;			// The width of the video in pixels
 	p_ctx->avi_hdr.dwHeight				= p_ctx->v_height;			// The height of the video in pixels
 
 	avi_write_buffer(p_ctx, (char*)&p_ctx->avi_hdr, sizeof(AVIMHDR));
 
 	avi_write_fourcc(p_ctx, "LIST");
-	avi_write_uint32(p_ctx,  4 + sizeof(AVISHDR) + 8 + sizeof(BMPHDR) + 8);
+	avi_write_uint32(p_ctx,  4 + sizeof(AVISHDR) + 8 + sizeof(BMPHDR) + 8 + v_extra_len + v_pad_len);
 	avi_write_fourcc(p_ctx, "strl");						        // How many streams are there in the file, and how many 'strl' sublists there are
 
 	avi_write_fourcc(p_ctx, "strh");
@@ -899,13 +1046,25 @@ int avi_write_header(AVICTX * p_ctx)
 	avi_write_buffer(p_ctx, (char*)&p_ctx->str_v, sizeof(AVISHDR));
 
 	avi_write_fourcc(p_ctx, "strf");
-	avi_write_uint32(p_ctx,  sizeof(BMPHDR));
+	avi_write_uint32(p_ctx,  sizeof(BMPHDR) + v_extra_len);
 	avi_write_buffer(p_ctx, (char*)&p_ctx->bmp, sizeof(BMPHDR));
+
+    // Write video extra information
+    
+	if (p_ctx->v_extra && p_ctx->v_extra_len)
+	{
+	    avi_write_buffer(p_ctx, (char*)p_ctx->v_extra, p_ctx->v_extra_len);
+
+	    if (v_pad_len)	/* pad */
+    	{
+    		fputc(0, p_ctx->f);
+        }
+	}
 
 	if (p_ctx->ctxf_audio == 1)
 	{
 		avi_write_fourcc(p_ctx, "LIST");
-		avi_write_uint32(p_ctx,  4 + sizeof(AVISHDR) + 8 + sizeof(WAVEFMT) + 8 + extra_len + pad_len);
+		avi_write_uint32(p_ctx,  4 + sizeof(AVISHDR) + 8 + sizeof(WAVEFMT) + 8 + a_extra_len + a_pad_len);
 		avi_write_fourcc(p_ctx, "strl");
 
 		avi_write_fourcc(p_ctx, "strh");
@@ -913,14 +1072,16 @@ int avi_write_header(AVICTX * p_ctx)
 		avi_write_buffer(p_ctx, (char*)&p_ctx->str_a, sizeof(AVISHDR));
 
 		avi_write_fourcc(p_ctx, "strf");
-		avi_write_uint32(p_ctx,  sizeof(WAVEFMT) + extra_len);
+		avi_write_uint32(p_ctx,  sizeof(WAVEFMT) + a_extra_len);
 		avi_write_buffer(p_ctx, (char*)&p_ctx->wave, sizeof(WAVEFMT));
 
+        // Write audio extra information
+        
 		if (p_ctx->a_extra && p_ctx->a_extra_len)
 		{
 		    avi_write_buffer(p_ctx, (char*)p_ctx->a_extra, p_ctx->a_extra_len);
 
-		    if (p_ctx->a_extra_len & 0x01)	/* pad */
+		    if (a_pad_len)	/* pad */
         	{
         		fputc(0, p_ctx->f);
             }
@@ -986,71 +1147,16 @@ int avi_update_header(AVICTX * p_ctx)
 
 int avi_calc_fps(AVICTX * p_ctx, uint8 * p_data, uint32 len, uint32 ts)
 {
-	int i;
-	
-	if (p_ctx->prev_ts == 0)
-	{
-	    p_ctx->prev_ts = ts;
-		return 0;
-	}
-	
-	if (p_ctx->prev_ts == ts)
-	{
-		return 0;
-    }
-
-    int count = ARRAY_SIZE(p_ctx->delta_ts);
-
-	uint32 delta_ts = ts - p_ctx->prev_ts;
-	
-	for (i=0; i<count; i++)
-	{
-		if (p_ctx->delta_ts[i] == 0)
-		{
-			p_ctx->delta_ts[i] = delta_ts;
-			break;
-		}
-	}
-
-	int delta_finish = 1;
-	
-	for (i=0; i<count; i++)
-	{
-		if (p_ctx->delta_ts[i] == 0)
-		{
-			delta_finish = 0;
-			break;
-		}
-	}
-	
-	if (delta_finish == 1)
-	{
-	    delta_ts = 0;
-	    
-	    for (i=0; i<count; i++)
-	    {
-	        delta_ts += p_ctx->delta_ts[i];   
-        }
-	    
-		delta_ts /= count;
-		
-		float fps = (float) 90000.0 / delta_ts;
-		
+	if (p_ctx->v_fps == 0 && p_ctx->i_frame_video >= 30)
+    {
+        float fps = (float) (p_ctx->i_frame_video * 1000.0) / (p_ctx->e_time - p_ctx->s_time);
 		p_ctx->v_fps = (uint32)(fps + 0.5);
 
-        log_print(HT_LOG_DBG, "%s, fps=%d\r\n", __FUNCTION__, (int)fps);
+		log_print(HT_LOG_DBG, "%s, stime=%u, etime=%u, frames=%d, fps=%d\r\n", 
+		    __FUNCTION__, p_ctx->s_time, p_ctx->e_time, p_ctx->i_frame_video, p_ctx->v_fps);
+    }
 
-        // If fps is equal to 0, recalculate fps
-        if (p_ctx->v_fps == 0)
-        {
-            p_ctx->prev_ts = 0;
-            memset(p_ctx->delta_ts, 0, sizeof(uint32)*count);
-        }
-        
-		return (int)fps;
-	}
-
-	return 0;
+    return 0;
 }
 
 int avi_parse_video_size(AVICTX * p_ctx, uint8 * p_data, uint32 len)

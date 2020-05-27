@@ -32,6 +32,9 @@
 #ifdef RTMP_STREAM
 #include "rtmp_cln.h"
 #endif
+#ifdef MJPEG_STREAM
+#include "http_mjpeg_cln.h"
+#endif
 
 #ifdef DEMO
 #define MAX_NUM_RUA			2
@@ -47,7 +50,8 @@ typedef struct
     uint32  used_flag : 1;      // used flag
     uint32  rtsp_flag : 1;      // rtsp stream
     uint32  rtmp_flag : 1;      // rtmp stream
-	uint32  reserved  : 29;     // reserved
+    uint32  mjpeg_flag: 1;      // mjpeg stream
+	uint32  reserved  : 28;     // reserved
 	
     char    url[256];           // url address
     char    user[32];           // login user
@@ -64,6 +68,9 @@ typedef struct
     CRtspClient * rtsp;         // rtsp client 
 #ifdef RTMP_STREAM
     CRtmpClient * rtmp;         // rtmp client
+#endif
+#ifdef MJPEG_STREAM
+    CHttpMjpeg  * mjpeg;        // mjpeg client
 #endif
 
     AVICTX* avictx;             // avi context

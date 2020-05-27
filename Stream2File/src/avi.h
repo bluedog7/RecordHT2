@@ -128,7 +128,9 @@ typedef struct avi_file_context
 	uint32		ctxf_sps_f	: 1;	    // Auxiliary calculation of image size usage, already filled in SPS in avcc
 	uint32		ctxf_pps_f	: 1;	    // Auxiliary calculation of image size usage, already filled in PPS in avcc	
 	uint32		ctxf_idx_m	: 1;	    // Index data write mode: = 1, memory mode; = 0, temporary file
-	uint32		ctxf_res	: 24;
+	uint32      ctxf_nalu   : 1;
+	uint32      ctxf_iframe : 1;
+	uint32		ctxf_res	: 22;
 
 	AVIMHDR		avi_hdr;                // AVI main header
 	AVISHDR		str_v;                  // Video stream header
@@ -145,7 +147,16 @@ typedef struct avi_file_context
 	char		v_fcc[4];			    // Video compression standard, "H264","H265","JPEG","MP4V"
 	int			v_width;			    // Video width
 	int			v_height;			    // Video height
+    uint8 * 	v_extra;
+	int			v_extra_len;
 
+    uint8       vps[512];
+    int         vps_len;
+    uint8       sps[512];
+    int         sps_len;
+    uint8       pps[512];
+    int         pps_len;
+    
 	int			a_rate;				    // Sampling frequency
 	uint16		a_fmt;				    // Audio compression standard
 	int			a_chns;				    // Number of audio channels
@@ -173,10 +184,6 @@ typedef struct avi_file_context
 	FILE *		idx_f;				    // Index temporary file
 	int			idx_fix[128];		    // Index file data is enough to write once for one sector
 	int			idx_fix_off;		    // The index data has been stored in the offset of idx_fix
-
-	// Auxiliary analysis
-	uint32		prev_ts;			    // Last timestamp
-	uint32		delta_ts[20];		    // Calculate fps values
 } AVICTX;
 
 #endif	// AVI_H

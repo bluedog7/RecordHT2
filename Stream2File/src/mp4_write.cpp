@@ -104,6 +104,11 @@ void mp4_write_close(MP4CTX * p_ctx)
 	    gf_isom_close(p_ctx->handler);
 	}
 
+	if (p_ctx->a_extra)
+	{
+	    free(p_ctx->a_extra);
+	}
+
 	sys_os_mutex_leave(p_ctx->mutex);
 
 	sys_os_destroy_sig_mutex(p_ctx->mutex);
@@ -122,21 +127,37 @@ void mp4_set_video_info(MP4CTX * p_ctx, int fps, int width, int height, const ch
 	p_ctx->ctxf_video = 1;
 }
 
-void mp4_set_audio_info(MP4CTX * p_ctx, int chns, int rate, uint16 fmt, uint8 * extra, int extra_len)
+void mp4_set_audio_info(MP4CTX * p_ctx, int chns, int rate, uint16 fmt)
 {
     p_ctx->a_chns = chns;
 	p_ctx->a_rate = rate;
 	p_ctx->a_fmt = fmt;
-	p_ctx->a_extra = extra;
-	p_ctx->a_extra_len = extra_len;
 
 	p_ctx->ctxf_audio = 1;
 }
 
-int mp4_init_jpeg(MP4CTX * p_ctx)
+void mp4_set_audio_extra_info(MP4CTX * p_ctx, uint8 * extra, int extra_len)
+{
+    if (NULL != extra && extra_len > 0)
+    {
+        p_ctx->a_extra = (uint8*) malloc(extra_len);
+    	if (p_ctx->a_extra)
+    	{
+    	    memcpy(p_ctx->a_extra, extra, extra_len);
+    	    p_ctx->a_extra_len = extra_len;
+        }
+    }
+}
+
+int mp4_write_jpeg_info(MP4CTX * p_ctx)
 {
     GF_Err err;
     uint32 fps = (p_ctx->v_fps > 0) ? p_ctx->v_fps : 25;
+
+    if (p_ctx->v_track_id > 0)
+    {
+        return 0;
+    }
     
     p_ctx->v_track_id = gf_isom_new_track(p_ctx->handler, 0, GF_ISOM_MEDIA_VISUAL, fps);
     if (0 == p_ctx->v_track_id)
@@ -152,6 +173,28 @@ int mp4_init_jpeg(MP4CTX * p_ctx)
         return -1;
     }
 
+    GF_ESD * p_esd = gf_odf_desc_esd_new(0);
+	if (NULL == p_esd)
+    {
+        log_print(HT_LOG_ERR, "%s, gf_odf_desc_esd_new failed\r\n", __FUNCTION__);
+        return -1;
+    }
+
+	p_esd->ESID = gf_isom_get_track_id(p_ctx->handler, p_ctx->v_track_id);
+	p_esd->decoderConfig->streamType = GF_STREAM_VISUAL;
+	p_esd->decoderConfig->objectTypeIndication = GPAC_OTI_IMAGE_JPEG;
+	p_esd->decoderConfig->bufferSizeDB = 200*1024;
+    p_esd->decoderConfig->avgBitrate = 8*200*1024;
+    p_esd->decoderConfig->maxBitrate = 8*200*1024;
+	p_esd->slConfig->timestampResolution = fps;
+	
+	err = gf_isom_new_mpeg4_description(p_ctx->handler, p_ctx->v_track_id, p_esd, NULL, NULL, &p_ctx->v_stream_idx);
+    if (GF_OK != err)
+    {
+        log_print(HT_LOG_ERR, "%s, gf_isom_new_mpeg4_description failed\r\n", __FUNCTION__);
+        return -1;
+    }
+    
     err = gf_isom_set_visual_info(p_ctx->handler, p_ctx->v_track_id, p_ctx->v_stream_idx, p_ctx->v_width, p_ctx->v_height);
     if (GF_OK != err)
     {
@@ -193,7 +236,7 @@ int mp4_write_aac_info(MP4CTX * p_ctx)
     }
 	
 	p_esd->ESID = gf_isom_get_track_id(p_ctx->handler, p_ctx->a_track_id);
-	p_esd->OCRESID = gf_isom_get_track_id(p_ctx->handler, p_ctx->a_track_id);
+	p_esd->OCRESID = p_esd->ESID;
 	p_esd->decoderConfig->streamType = GF_STREAM_AUDIO;
 	p_esd->decoderConfig->objectTypeIndication = GPAC_OTI_AUDIO_AAC_MPEG4;
 	p_esd->slConfig->timestampResolution = p_ctx->a_rate;
@@ -226,7 +269,7 @@ int mp4_write_header(MP4CTX * p_ctx)
     {
         if (memcmp(p_ctx->v_fcc, "JPEG", 4) == 0)
         {
-            // ret = mp4_init_jpeg(p_ctx);
+            ret = mp4_write_jpeg_info(p_ctx);
         }
     }
 
@@ -254,7 +297,7 @@ int mp4_update_header(MP4CTX * p_ctx)
 
     if (p_ctx->v_track_id > 0)
     {
-        gf_isom_set_timescale(p_ctx->handler, p_ctx->v_fps > 0 ? p_ctx->v_fps : 25);
+        gf_isom_set_media_timescale(p_ctx->handler, p_ctx->v_track_id, p_ctx->v_fps > 0 ? p_ctx->v_fps : 25, GF_FALSE);
     }
 
     sys_os_mutex_leave(p_ctx->mutex);
@@ -262,7 +305,7 @@ int mp4_update_header(MP4CTX * p_ctx)
     return 0;
 }
 
-int mp4_write_aac_frame(MP4CTX * p_ctx, void * p_data, uint32 len)
+int mp4_write_audio_frame(MP4CTX * p_ctx, void * p_data, uint32 len)
 {
     int ret = 0;
     GF_Err err;
@@ -290,6 +333,7 @@ int mp4_write_aac_frame(MP4CTX * p_ctx, void * p_data, uint32 len)
     if (GF_OK != err)
     {
         ret = -1;
+        log_print(HT_LOG_ERR, "%s, gf_isom_add_sample failed, err=%d\r\n", __FUNCTION__, err);
     }
 
     p_sample->data = NULL;
@@ -297,7 +341,10 @@ int mp4_write_aac_frame(MP4CTX * p_ctx, void * p_data, uint32 len)
     
     gf_isom_sample_del(&p_sample);
 
-    p_ctx->i_frame_audio++;
+    if (ret == 0)
+    {
+        p_ctx->i_frame_audio++;
+    }
     
     return ret;
 }
@@ -305,6 +352,18 @@ int mp4_write_aac_frame(MP4CTX * p_ctx, void * p_data, uint32 len)
 int mp4_write_audio(MP4CTX * p_ctx, void * p_data, uint32 len)
 {
     int ret = 0;
+
+    if (p_ctx->ctxf_video)
+    {
+        if (memcmp(p_ctx->v_fcc, "H264", 4) == 0 || 
+            memcmp(p_ctx->v_fcc, "H265", 4) == 0)
+        {
+            if (!p_ctx->ctxf_iframe)
+            {
+                return 0;
+            }
+        }
+    }
     
     sys_os_mutex_enter(p_ctx->mutex);
     
@@ -314,11 +373,11 @@ int mp4_write_audio(MP4CTX * p_ctx, void * p_data, uint32 len)
 
         if (p_buf[0] == 0xFF && (p_buf[1] & 0xF0) == 0xF0)
         {
-            ret = mp4_write_aac_frame(p_ctx, p_buf + 7, len - 7);
+            ret = mp4_write_audio_frame(p_ctx, p_buf + 7, len - 7);
         }    
         else
         {
-            ret = mp4_write_aac_frame(p_ctx, p_buf, len);
+            ret = mp4_write_audio_frame(p_ctx, p_buf, len);
 		}
     }
 
@@ -574,8 +633,11 @@ int mp4_write_video_frame(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
 	
 	memset(p_sample, 0, sizeof(GF_ISOSample));
 
-    nlen = htonl(len - 4);
-    memcpy(p_data, &nlen, 4);
+    if (memcmp(p_ctx->v_fcc, "H264", 4) == 0 || memcmp(p_ctx->v_fcc, "H265", 4) == 0)
+    {
+        nlen = htonl(len - 4);
+        memcpy(p_data, &nlen, 4);
+	}
 	
 	p_sample->IsRAP = (SAPType)b_key;
 	p_sample->dataLength = len;
@@ -587,29 +649,31 @@ int mp4_write_video_frame(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
 	if (GF_OK != err)
 	{
 	    ret = -1;
-		log_print(HT_LOG_ERR, "%s, gf_isom_add_sample failed\r\n", __FUNCTION__);
+		log_print(HT_LOG_ERR, "%s, gf_isom_add_sample failed, err=%d\r\n", __FUNCTION__, err);
 	}
-
-    p_ctx->v_timestamp += 1;
     
 	p_sample->data = NULL;
 	p_sample->dataLength = 0;
 	
 	gf_isom_sample_del(&p_sample);
 
-    p_ctx->i_frame_video++;
-    
-	if (p_ctx->s_time == 0)
-	{
-		p_ctx->s_time = sys_os_get_ms();
-		p_ctx->e_time = p_ctx->s_time;
-	}
-	else
-	{
-		p_ctx->e_time = sys_os_get_ms();
+    if (ret == 0)
+    {
+        p_ctx->v_timestamp += 1;
+        p_ctx->i_frame_video++;
+        
+    	if (p_ctx->s_time == 0)
+    	{
+    		p_ctx->s_time = sys_os_get_ms();
+    		p_ctx->e_time = p_ctx->s_time;
+    	}
+    	else
+    	{
+    		p_ctx->e_time = sys_os_get_ms();
+    	}
 	}
 	
-    return 0;
+    return ret;
 }
 
 int mp4_write_h264(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
@@ -657,11 +721,11 @@ int mp4_write_h264(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
     {
         if (!p_ctx->ctxf_iframe)
         {
-            if (H264_NAL_IDR == nalu)
+            if (b_key)
             {
                 if (mp4_write_video_frame(p_ctx, p_data, len, b_key) < 0)
                 {
-                    log_print(HT_LOG_ERR, "%s, mp4_write_frame failed\r\n", __FUNCTION__);
+                    log_print(HT_LOG_ERR, "%s, mp4_write_video_frame failed\r\n", __FUNCTION__);
                     return -1;
                 }
                 else
@@ -674,7 +738,7 @@ int mp4_write_h264(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
         {
             if (mp4_write_video_frame(p_ctx, p_data, len, b_key) < 0)
             {
-                log_print(HT_LOG_ERR, "%s, mp4_write_frame failed\r\n", __FUNCTION__);
+                log_print(HT_LOG_ERR, "%s, mp4_write_video_frame failed\r\n", __FUNCTION__);
                 return -1;
             }
         }
@@ -749,7 +813,7 @@ int mp4_write_h265(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
             {
                 if (mp4_write_video_frame(p_ctx, p_data, len, b_key) < 0)
                 {
-                    log_print(HT_LOG_ERR, "%s, mp4_write_frame failed\r\n", __FUNCTION__);
+                    log_print(HT_LOG_ERR, "%s, mp4_write_video_frame failed\r\n", __FUNCTION__);
                     return -1;
                 }
                 else
@@ -762,7 +826,7 @@ int mp4_write_h265(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
         {
             if (mp4_write_video_frame(p_ctx, p_data, len, b_key) < 0)
             {
-                log_print(HT_LOG_ERR, "%s, mp4_write_frame failed\r\n", __FUNCTION__);
+                log_print(HT_LOG_ERR, "%s, mp4_write_video_frame failed\r\n", __FUNCTION__);
                 return -1;
             }
         }
@@ -785,84 +849,33 @@ int mp4_write_video(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
     {
         ret = mp4_write_h265(p_ctx, p_data, len, b_key);
     }
+    else if (memcmp(p_ctx->v_fcc, "JPEG", 4) == 0)
+    {
+        ret = mp4_write_video_frame(p_ctx, p_data, len, b_key);
+    }
 
     sys_os_mutex_leave(p_ctx->mutex);
     
     return ret;
 }
 
-int mp4_calc_fps(MP4CTX * p_ctx, uint8 * p_data, uint32 len, uint32 ts)
+int mp4_calc_fps(MP4CTX* p_ctx, uint8* p_data, uint32 len, uint32 ts)
 {
-    int i;
-	
-	if (p_ctx->prev_ts == 0)
-	{
-	    p_ctx->prev_ts = ts;
-		return 0;
-	}
-	
-	if (p_ctx->prev_ts == ts)
-	{
-		return 0;
-    }
+    if (p_ctx->v_fps == 0 && p_ctx->i_frame_video >= 30)
+    {
+        float fps = (float)(p_ctx->i_frame_video * 1000.0) / (p_ctx->e_time - p_ctx->s_time);
+        p_ctx->v_fps = (uint32)(fps + 0.5);
 
-    int count = ARRAY_SIZE(p_ctx->delta_ts);
-
-	// Calculate the frame rate
-	uint32 delta_ts = ts - p_ctx->prev_ts;
-	
-	for (i=0; i<count; i++)
-	{
-		if (p_ctx->delta_ts[i] == 0)
-		{
-			p_ctx->delta_ts[i] = delta_ts;
-			break;
-		}
-	}
-
-	int delta_finish = 1;
-	
-	for (i=0; i<count; i++)
-	{
-		if (p_ctx->delta_ts[i] == 0)
-		{
-			delta_finish = 0;
-			break;
-		}
-	}
-	
-	if (delta_finish == 1)
-	{
-	    delta_ts = 0;
-	    
-	    for (i=0; i<count; i++)
-	    {
-	        delta_ts += p_ctx->delta_ts[i];   
-        }
-	    
-		delta_ts /= count;
-		
-		float fps = (float) 90000.0 / delta_ts;
-		
-		p_ctx->v_fps = (uint32)(fps + 0.5);
-
-        log_print(HT_LOG_DBG, "%s, fps=%d\r\n", __FUNCTION__, (int)fps);
-
-        // If fps is equal to 0, recalculate fps
-        if (p_ctx->v_fps == 0)
-        {
-            p_ctx->prev_ts = 0;
-            memset(p_ctx->delta_ts, 0, sizeof(uint32)*count);
-        }
-        else
+        if (p_ctx->v_fps > 0)
         {
             gf_isom_set_media_timescale(p_ctx->handler, p_ctx->v_track_id, p_ctx->v_fps, GF_TRUE);
         }
-        
-		return (int)fps;
-	}
 
-	return 0;
+        log_print(HT_LOG_DBG, "%s, stime=%u, etime=%u, frames=%d, fps=%d\r\n",
+            __FUNCTION__, p_ctx->s_time, p_ctx->e_time, p_ctx->i_frame_video, p_ctx->v_fps);
+    }
+
+    return 0;
 }
 
 int mp4_parse_video_size(MP4CTX * p_ctx, uint8 * p_data, uint32 len)
