@@ -35,6 +35,7 @@
 #include "mysql.h"
 #include <cstring>
 #include <thread>
+#include <http\http_parse.h>
 using namespace std;
 
 #pragma comment(lib,"libmysql.lib")

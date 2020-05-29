@@ -130,8 +130,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;HT_STATIC;ZLIB_WINAPI;MP4_FORMAT;RTMP_STREAM;AUDIO_CONV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\;.\bm;.\rtp;.\rtsp;.\src;.\rtmp;.\librtmp;.\media;.\gpac\include;.\zlib\include;.\openssl\include;.\openssl\include\win;.\ffmpeg\include;.\mysql-5.7.27-win32\mysql-5.7.27-win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;HT_STATIC;ZLIB_WINAPI;MP4_FORMAT;RTMP_STREAM;AUDIO_CONV;MJPEG_STREAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>.\;.\bm;.\rtp;.\rtsp;.\src;.\rtmp;.\librtmp;.\media;.\gpac\include;.\zlib\include;.\openssl\include;.\openssl\include\win;.\ffmpeg\include;.\mysql-5.7.27-win32\mysql-5.7.27-win32\include;.\http;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>

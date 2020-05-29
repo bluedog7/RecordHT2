@@ -43,15 +43,15 @@
   컴파일하고 있습니다...
   mp4_write.cpp
   r2f.cpp
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1859,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1748,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1762,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1811,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1811,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1811,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1811,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1912,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1913,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1860,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1749,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1763,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1812,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1812,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1812,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1812,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1913,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1914,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
   r2f_cfg.cpp
   r2f_rua.cpp
   amf.c
@@ -61,7 +61,7 @@ F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1913,38): warning C4101: 'buffer' :�
   rtmp.c
   코드를 생성하고 있습니다.
   Previous IPDB not found, fall back to full compilation.
-  All 589 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 631 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   코드를 생성했습니다.
 zlibstat.lib(adler32.obj) : warning LNK4099: 'zlibstat.pdb' PDB를 'zlibstat.lib(adler32.obj)' 또는 'F:\Source\RecordHT2\Release\zlibstat.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
 zlibstat.lib(crc32.obj) : warning LNK4099: 'zlibstat.pdb' PDB를 'zlibstat.lib(crc32.obj)' 또는 'F:\Source\RecordHT2\Release\zlibstat.pdb'에서 찾을 수 없습니다. 디버그 정보가 없는 것처럼 개체를 링크합니다.
