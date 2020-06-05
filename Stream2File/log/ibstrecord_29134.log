@@ -1,0 +1,5 @@
+[2020-05-30 11:34:07] : [INFO] net_buf_init, num = 400
+[2020-05-30 11:34:07] : [INFO] hdrv_buf_init, num = 3200
+[2020-05-30 11:34:13] : [DEBUG] sig_handler, Closing
+[2020-05-30 11:34:13] : [INFO] r2f_task_thread, exit
+[2020-05-30 11:34:13] : [DEBUG] r2f_stop finished

@@ -187,23 +187,23 @@ int http_build_auth_msg(HTTPREQ * p_user, const char * method, char * buff)
         
         http_calc_auth_digest(&p_user->auth_info, method);
 
-        offset += sprintf(buff+offset, "Authorization: Digest username=\"%s\",realm=\"%s\","
-	    	"nonce=\"%s\",uri=\"%s\",response=\"%s\"",
+        offset += sprintf(buff+offset, "Authorization: Digest username=\"%s\", realm=\"%s\", "
+	    	"nonce=\"%s\", uri=\"%s\", response=\"%s\"",
 			p_user->auth_info.auth_name, p_user->auth_info.auth_realm, p_user->auth_info.auth_nonce, 
 			p_user->auth_info.auth_uri, p_user->auth_info.auth_response);
     			
         if (p_user->auth_info.auth_qop[0] != '\0')
         {
-            offset += sprintf(buff+offset, ",qop=\"auth\",cnonce=\"%s\",nc=%s",
+            offset += sprintf(buff+offset, ", qop=\"auth\", cnonce=\"%s\", nc=%s",
     			p_user->auth_info.auth_cnonce, p_user->auth_info.auth_ncstr);
         }
 
         if (p_user->auth_info.auth_opaque[0] != '\0')
         {
-            offset += sprintf(buff+offset, ",opaque=\"%s\"", p_user->auth_info.auth_opaque);
+            offset += sprintf(buff+offset, ", opaque=\"%s\"", p_user->auth_info.auth_opaque);
         }
 
-        offset += sprintf(buff+offset, ",algorithm=\"MD5\"\r\n");
+        offset += sprintf(buff+offset, ", algorithm=\"MD5\"\r\n");
 	}
 	else if (p_user->auth_mode == 0)	// basic auth
 	{

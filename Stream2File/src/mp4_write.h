@@ -35,7 +35,7 @@ int      mp4_write_header(MP4CTX * p_ctx);
 int      mp4_update_header(MP4CTX * p_ctx);
 int      mp4_write_audio(MP4CTX * p_ctx, void * p_data, uint32 len);
 int      mp4_write_video(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key);
-int      mp4_calc_fps(MP4CTX * p_ctx, uint8 * p_data, uint32 len, uint32 ts);
+int      mp4_calc_fps(MP4CTX * p_ctx, uint8 * p_data, uint32 len);
 int      mp4_parse_video_size(MP4CTX * p_ctx, uint8 * p_data, uint32 len);
 
 #ifdef __cplusplus

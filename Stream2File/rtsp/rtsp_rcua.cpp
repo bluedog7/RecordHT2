@@ -95,16 +95,16 @@ void rua_build_auth_line(RCUA * p_rua, HRTSP_MSG * tx_msg, const char * p_method
 
         if (p_rua->auth_info.auth_qop[0] != '\0')
         {
-            rtsp_add_tx_msg_line(tx_msg,"Authorization","Digest username=\"%s\",realm=\"%s\","
-    	    	"nonce=\"%s\",uri=\"%s\",response=\"%s\",qop=auth,algorithm=\"MD5\",cnonce=\"%s\",nc=%s",
+            rtsp_add_tx_msg_line(tx_msg,"Authorization","Digest username=\"%s\", realm=\"%s\", "
+    	    	"nonce=\"%s\", uri=\"%s\", response=\"%s\", qop=\"auth\", algorithm=\"MD5\", cnonce=\"%s\", nc=%s",
     			p_rua->auth_info.auth_name, p_rua->auth_info.auth_realm, p_rua->auth_info.auth_nonce, 
     			p_rua->auth_info.auth_uri, p_rua->auth_info.auth_response, p_rua->auth_info.auth_cnonce,
     			p_rua->auth_info.auth_ncstr);
         }
         else
         {
-    	    rtsp_add_tx_msg_line(tx_msg,"Authorization","Digest username=\"%s\",realm=\"%s\","
-    	    	"nonce=\"%s\",uri=\"%s\",response=\"%s\",algorithm=\"MD5\"",
+    	    rtsp_add_tx_msg_line(tx_msg,"Authorization","Digest username=\"%s\", realm=\"%s\", "
+    	    	"nonce=\"%s\", uri=\"%s\", response=\"%s\", algorithm=\"MD5\"",
     			p_rua->auth_info.auth_name, p_rua->auth_info.auth_realm, p_rua->auth_info.auth_nonce, 
     			p_rua->auth_info.auth_uri, p_rua->auth_info.auth_response);
 		}

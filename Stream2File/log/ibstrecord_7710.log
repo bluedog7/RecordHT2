@@ -1,0 +1,24 @@
+[2020-05-30 11:35:15] : [INFO] net_buf_init, num = 400
+[2020-05-30 11:35:15] : [INFO] hdrv_buf_init, num = 3200
+[2020-05-30 11:35:15] : [INFO] [r2f_start],7710 record process is started 
+[2020-05-30 11:35:15] : [DEBUG] r2f_notify_callback, event = 21
+[2020-05-30 11:35:15] : [DEBUG] TX >> GET  HTTP/1.1
+Host: 118.39.27.87:8080
+Accept: */*
+User-Agent: happytimesoft/1.0
+Range: bytes=0-
+
+
+[2020-05-30 11:35:15] : [DEBUG] RX from 118.39.27.87 << HTTP/1.1 200 OK
+Content-Type: multipart/x-mixed-replace; boundary=--boundary
+
+
+[2020-05-30 11:35:15] : [DEBUG] r2f_notify_callback, event = 23
+[2020-05-30 11:35:15] : [INFO] mp4_parse_video_size, MJPEG width[1920],height[1080]
+[2020-05-30 11:35:21] : [DEBUG] mp4_calc_fps, stime=497350750, etime=497356015, frames=30, fps=6
+[2020-05-30 11:35:36] : [DEBUG] sig_handler, Closing
+[2020-05-30 11:35:37] : [DEBUG] mp4_write_close, stime=497350750, etime=497372093, frames=118, fps=6
+[2020-05-30 11:35:37] : [DEBUG] mp4_write_close, file=D:\simprec_inha\simprec_inha\simprec_inha\mov\1384472501\2\10009_2_1590804104.mp4,stime=497350750, etime=497372093, frames=118, fps=6
+[2020-05-30 11:35:37] : [ERROR] mp4_write_video_frame, gf_isom_add_sample failed, err=-1
+[2020-05-30 11:35:37] : [INFO] r2f_task_thread, exit
+[2020-05-30 11:35:37] : [DEBUG] r2f_stop finished

@@ -44,7 +44,7 @@ void 	avi_build_video_hdr(AVICTX * p_ctx);
 void 	avi_build_audio_hdr(AVICTX * p_ctx);
 int 	avi_write_header(AVICTX * p_ctx);
 int 	avi_update_header(AVICTX * p_ctx);
-int	 	avi_calc_fps(AVICTX * p_ctx, uint8 * p_data, uint32 len, uint32 ts);
+int	 	avi_calc_fps(AVICTX * p_ctx, uint8 * p_data, uint32 len);
 int 	avi_parse_video_size(AVICTX * p_ctx, uint8 * p_data, uint32 len);
 
 

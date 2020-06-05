@@ -1145,7 +1145,7 @@ int avi_update_header(AVICTX * p_ctx)
 	return -1;
 }
 
-int avi_calc_fps(AVICTX * p_ctx, uint8 * p_data, uint32 len, uint32 ts)
+int avi_calc_fps(AVICTX * p_ctx, uint8 * p_data, uint32 len)
 {
 	if (p_ctx->v_fps == 0 && p_ctx->i_frame_video >= 30)
     {

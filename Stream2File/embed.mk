@@ -5,6 +5,7 @@ CPPCOMPILE = g++
 COMPILEOPTION += -c -O3 -fPIC
 COMPILEOPTION += -DMP4_FORMAT
 COMPILEOPTION += -DRTMP_STREAM
+COMPILEOPTION += -DMJPEG_STREAM
 
 ifneq ($(findstring MP4_FORMAT, $(COMPILEOPTION)),)
 COMPILEOPTION += -DGPAC_HAVE_CONFIG_H
@@ -24,7 +25,6 @@ INCLUDEDIR += -I./librtmp
 INCLUDEDIR += -I./gpac/include
 INCLUDEDIR += -I./zlib/include
 INCLUDEDIR += -I./openssl/include
-INCLUDEDIR += -I./openssl/include/linux
 INCLUDEDIR += -I./ffmpeg/include
 LIBDIRS += -L./gpac/lib/linux
 LIBDIRS += -L./zlib/lib/linux
@@ -87,10 +87,28 @@ OBJS += librtmp/parseurl.o
 OBJS += librtmp/rtmp.o
 endif
 
+ifneq ($(findstring MJPEG_STREAM, $(COMPILEOPTION)),)
+OBJS += http/http_cln.o
+OBJS += http/http_mjpeg_cln.o
+OBJS += http/http_parse.o
+endif
+
+ffmpeg := 0
+
 ifneq ($(findstring AUDIO_CONV, $(COMPILEOPTION)),)
+ffmpeg := 1
 OBJS += media/audio_decoder.o
 OBJS += media/audio_encoder.o
 OBJS += media/avcodec_mutex.o
+endif
+
+ifneq ($(findstring VIDEO_CONV, $(COMPILEOPTION)),)
+ffmpeg := 1
+OBJS += media/video_decoder.o
+OBJS += media/video_encoder.o
+ifeq ($(findstring AUDIO_CONV, $(COMPILEOPTION)),)
+OBJS += media/avcodec_mutex.o
+endif
 endif
 
 SHAREDLIB += -lpthread
@@ -105,7 +123,7 @@ SHAREDLIB += -lcrypto
 SHAREDLIB += -lz
 endif
 
-ifneq ($(findstring AUDIO_CONV, $(COMPILEOPTION)),)
+ifeq ($(ffmpeg), 1)
 SHAREDLIB += -lavformat
 SHAREDLIB += -lavcodec
 SHAREDLIB += -lswresample

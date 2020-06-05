@@ -6,6 +6,7 @@ COMPILEOPTION += -c -O3 -fPIC
 COMPILEOPTION += -DIOS
 COMPILEOPTION += -DMP4_FORMAT
 COMPILEOPTION += -DRTMP_STREAM
+COMPILEOPTION += -DMJPEG_STREAM
 COMPILEOPTION += -DAUDIO_CONV
 
 ifneq ($(findstring MP4_FORMAT, $(COMPILEOPTION)),)
@@ -82,10 +83,28 @@ OBJS += librtmp/parseurl.o
 OBJS += librtmp/rtmp.o
 endif
 
+ifneq ($(findstring MJPEG_STREAM, $(COMPILEOPTION)),)
+OBJS += http/http_cln.o
+OBJS += http/http_mjpeg_cln.o
+OBJS += http/http_parse.o
+endif
+
+ffmpeg := 0
+
 ifneq ($(findstring AUDIO_CONV, $(COMPILEOPTION)),)
+ffmpeg := 1
 OBJS += media/audio_decoder.o
 OBJS += media/audio_encoder.o
 OBJS += media/avcodec_mutex.o
+endif
+
+ifneq ($(findstring VIDEO_CONV, $(COMPILEOPTION)),)
+ffmpeg := 1
+OBJS += media/video_decoder.o
+OBJS += media/video_encoder.o
+ifeq ($(findstring AUDIO_CONV, $(COMPILEOPTION)),)
+OBJS += media/avcodec_mutex.o
+endif
 endif
 
 SHAREDLIB += -lpthread
@@ -100,7 +119,7 @@ SHAREDLIB += -lcrypto
 SHAREDLIB += -lz
 endif
 
-ifneq ($(findstring AUDIO_CONV, $(COMPILEOPTION)),)
+ifeq ($(ffmpeg), 1)
 SHAREDLIB += -lavformat
 SHAREDLIB += -lavcodec
 SHAREDLIB += -lswresample

@@ -423,6 +423,22 @@ HT_API char * sys_os_get_socket_error()
 	return p_estr;
 }
 
+HT_API int sys_os_get_socket_error_num()
+{
+	int sockerr;
+	
+#if __LINUX_OS__
+
+	sockerr = errno;
+	
+#elif __WINDOWS_OS__
+
+	sockerr = WSAGetLastError();
+	
+#endif
+
+	return sockerr;
+}
 
 static FILE * pMemLogFile = NULL;
 static void * logMemFileMutex = NULL;

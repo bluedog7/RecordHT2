@@ -185,6 +185,7 @@ HT_API pthread_t    sys_os_create_thread(void * thread_func, void * argv);
 HT_API uint32       sys_os_get_ms();
 HT_API uint32       sys_os_get_uptime();
 HT_API char       * sys_os_get_socket_error();
+HT_API int          sys_os_get_socket_error_num();
 
 /*************************************************************************/
 HT_API void       * xmalloc(size_t size, const char * pFileName, int line);

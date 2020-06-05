@@ -31,17 +31,15 @@
 #include "log.h"
 #include "rtmp_cln.h"
 #endif
-
 #include "mysql.h"
 #include <cstring>
 #include <thread>
-#include <http\http_parse.h>
 using namespace std;
 
 #pragma comment(lib,"libmysql.lib")
 /***************************************************************************************/
 #define R2F_MAJOR_VERSION   2
-#define R2F_MINOR_VERSION   2
+#define R2F_MINOR_VERSION   4
 
 /***************************************************************************************/
 
@@ -69,6 +67,18 @@ void r2f_audio_encode_cb(uint8 *data, int size, int nbsamples, void *pUserdata)
 
 BOOL r2f_init_audio_recodec(RUA * p_rua, int codec, int sr, int chs)
 {
+    if (p_rua->adecoder)
+    {
+        delete p_rua->adecoder;
+        p_rua->adecoder = NULL;
+    }
+
+    if (p_rua->aencoder)
+    {
+        delete p_rua->aencoder;
+        p_rua->aencoder = NULL;
+    }
+    
     p_rua->adecoder = new CAudioDecoder();
     if (p_rua->adecoder)
     {
@@ -108,14 +118,7 @@ BOOL r2f_init_audio_recodec(RUA * p_rua, int codec, int sr, int chs)
         
         if (p_rua->aencoder->init(&param))
         {
-            int extralen = 0;
-            uint8 * extradata = NULL;
-
             p_rua->aencoder->addCallback(r2f_audio_encode_cb, p_rua);
-            p_rua->aencoder->getExtraData(&extradata, &extralen);
-
-            mp4_set_audio_info(p_rua->mp4ctx, chs, sr, AUDIO_FORMAT_AAC);
-            mp4_set_audio_extra_info(p_rua->mp4ctx, extradata, extralen);
         }
         else
         {
@@ -136,6 +139,105 @@ BOOL r2f_init_audio_recodec(RUA * p_rua, int codec, int sr, int chs)
 
         delete p_rua->adecoder;
         p_rua->adecoder = NULL;
+        return FALSE;
+    }
+
+    return TRUE;
+}
+
+#endif
+
+#ifdef VIDEO_CONV
+
+void r2f_video_decode_cb(AVFrame * frame, void *pUserdata)
+{
+    RUA * p_rua = (RUA *)pUserdata;
+    if (p_rua->vencoder)
+    {
+        p_rua->vencoder->encode(frame);
+    }
+}
+
+void r2f_video_encode_cb(uint8 *data, int size, void *pUserdata)
+{
+	RUA * p_rua = (RUA *)pUserdata;
+
+	r2f_record_video_ex(p_rua, data, size, VIDEO_CODEC_H264);
+}
+
+BOOL r2f_init_video_recodec(RUA * p_rua, int codec, int w, int h, int fps)
+{
+    if (p_rua->vdecoder)
+    {
+        delete p_rua->vdecoder;
+        p_rua->vdecoder = NULL;
+    }
+
+    if (p_rua->vencoder)
+    {
+        delete p_rua->vencoder;
+        p_rua->vencoder = NULL;
+    }
+    
+    p_rua->vdecoder = new CVideoDecoder();
+    if (p_rua->vdecoder)
+    {
+        if (p_rua->vdecoder->init(codec))
+        {
+            p_rua->vdecoder->setCallback(r2f_video_decode_cb, p_rua);
+        }
+        else
+        {
+            log_print(HT_LOG_ERR, "%s, video decoder init failed\r\n", __FUNCTION__);
+
+            delete p_rua->vdecoder;
+            p_rua->vdecoder = NULL;
+            return FALSE;
+        }
+    }
+    else
+    {
+        log_print(HT_LOG_ERR, "%s, new video decoder failed\r\n", __FUNCTION__);
+        return FALSE;
+    }
+
+    p_rua->vencoder = new CVideoEncoder();
+    if (p_rua->vencoder)
+    {
+        VideoEncoderParam param;
+        memset(&param, 0, sizeof(param));
+
+        param.SrcWidth = w;
+        param.SrcHeight = h;
+        param.SrcPixFmt = AV_PIX_FMT_YUV420P;
+        param.DstCodec = VIDEO_CODEC_H264;
+        param.DstWidth = w;
+        param.DstHeight = h;
+        param.DstFramerate = fps > 0 ? fps : 25;
+        
+        if (p_rua->vencoder->init(&param))
+        {
+            p_rua->vencoder->addCallback(r2f_video_encode_cb, p_rua);
+        }
+        else
+        {
+            log_print(HT_LOG_ERR, "%s, video encoder init failed\r\n", __FUNCTION__);
+
+            delete p_rua->vdecoder;
+            p_rua->vdecoder = NULL;
+
+            delete p_rua->vencoder;
+            p_rua->vencoder = NULL;
+            
+            return FALSE;
+        }
+    }
+    else
+    {
+        log_print(HT_LOG_ERR, "%s, new video encoder failed\r\n", __FUNCTION__);
+
+        delete p_rua->vdecoder;
+        p_rua->vdecoder = NULL;
         return FALSE;
     }
 
@@ -231,7 +333,7 @@ int rtmp_video_callback(uint8 * pdata, int len, uint32 ts, void *puser)
 {
     // log_print(HT_LOG_DBG, "%s, len = %d, ts = %u, seq = %d\r\n", __FUNCTION__, len, ts, seq);
 
-    return r2f_record_video((RUA *)puser, pdata, len, ts);
+    return r2f_record_video((RUA *)puser, pdata, len);
 }
 
 void rtmp_reconn(RUA * p_rua)
@@ -263,7 +365,7 @@ void rtmp_reconn(RUA * p_rua)
 
 int mjpeg_video_callback(uint8 * pdata, int len, void *puser)
 {
-    return r2f_record_video((RUA *)puser, pdata, len, rtsp_get_timestamp(90000));
+    return r2f_record_video((RUA *)puser, pdata, len);
 }
 
 void mjpeg_reconn(RUA * p_rua)
@@ -441,13 +543,18 @@ int r2f_notify_callback(int event, void * puser)
 				avi_set_video_extra_info(p_avictx, v_extra, v_extra_len);
 	        }
 	    }
-	    else if (VIDEO_CODEC_JPEG == vcodec)
-	    {
-	        avi_set_video_info(p_avictx, p_rua->framerate, 0, 0, "JPEG");
-	    }
 	    else if (VIDEO_CODEC_MP4 == vcodec)
 	    {
 	        avi_set_video_info(p_avictx, p_rua->framerate, 0, 0, "MP4V");
+	    }
+	    else if (VIDEO_CODEC_JPEG == vcodec)
+	    {
+#ifdef VIDEO_CONV
+            // Transcode JPEG format to H264 format
+            avi_set_video_info(p_avictx, p_rua->framerate, 0, 0, "H264");
+#else
+	        avi_set_video_info(p_avictx, p_rua->framerate, 0, 0, "JPEG");
+#endif	        
 	    }
 
 	    // set audio information
@@ -510,13 +617,18 @@ int r2f_notify_callback(int event, void * puser)
 	    {
 	        mp4_set_video_info(p_mp4ctx, p_rua->framerate, 0, 0, "H265");
 	    }
-	    else if (VIDEO_CODEC_JPEG == vcodec)
-	    {
-	        mp4_set_video_info(p_mp4ctx, p_rua->framerate, 0, 0, "JPEG");
-	    }
 	    else if (VIDEO_CODEC_MP4 == vcodec)
 	    {
 	        mp4_set_video_info(p_mp4ctx, p_rua->framerate, 0, 0, "MP4V");
+	    }
+	    else if (VIDEO_CODEC_JPEG == vcodec)
+	    {
+#ifdef VIDEO_CONV
+            // Transcode JPEG format to H264 format
+            mp4_set_video_info(p_mp4ctx, p_rua->framerate, 0, 0, "H264");
+#else            
+	        mp4_set_video_info(p_mp4ctx, p_rua->framerate, 0, 0, "JPEG");
+#endif
 	    }
             
 	    if (AUDIO_CODEC_AAC == acodec)
@@ -531,7 +643,16 @@ int r2f_notify_callback(int event, void * puser)
 #ifdef AUDIO_CONV
         else if (AUDIO_CODEC_NONE != acodec)
         {
-            r2f_init_audio_recodec(p_rua, acodec, sr, ch);
+            if (r2f_init_audio_recodec(p_rua, acodec, sr, ch))
+            {
+                int extralen = 0;
+                uint8 * extradata = NULL;
+
+                p_rua->aencoder->getExtraData(&extradata, &extralen);
+
+                mp4_set_audio_info(p_rua->mp4ctx, ch, sr, AUDIO_FORMAT_AAC);
+                mp4_set_audio_extra_info(p_rua->mp4ctx, extradata, extralen);
+            }
         }
 #endif
 
@@ -555,7 +676,7 @@ int rtsp_video_callback(uint8 * pdata, int len, uint32 ts, uint16 seq, void * pu
 {
     // log_print(HT_LOG_DBG, "%s, len = %d, ts = %u, seq = %d\r\n", __FUNCTION__, len, ts, seq);
 
-    return r2f_record_video((RUA *)puser, pdata, len, ts);
+    return r2f_record_video((RUA *)puser, pdata, len);
 }
 
 /***************************************************************/
@@ -563,7 +684,7 @@ void rtsp_reconn(RUA * p_rua)
 {
     char url[256], user[64], pass[64];
     CRtspClient * p_rtsp = p_rua->rtsp;
-    if (p_rtsp == NULL) return;
+
 	strcpy(url, p_rtsp->get_url());
 	strcpy(user, p_rtsp->get_user());
 	strcpy(pass, p_rtsp->get_pass());
@@ -591,19 +712,23 @@ int r2f_record_aac(RUA * p_rua, uint8 * pdata, int len)
     uint16 frame_len = len + 7;
     uint8 adts[7];
 
-    if (p_rua->rtsp_flag)
+    if (p_rua->rtsp_flag && p_rua->rtsp)
     {
         chs = p_rua->rtsp->get_audio_channels();
         sr = p_rua->rtsp->get_audio_samplerate();
     }
 #ifdef RTMP_STREAM        
-    else if (p_rua->rtmp_flag)
+    else if (p_rua->rtmp_flag && p_rua->rtmp)
     {
         chs = p_rua->rtmp->get_audio_channels();
         sr = p_rua->rtmp->get_audio_samplerate();
     }
 #endif
-
+    else
+    {
+        return -1;
+    }
+    
     adts[0] = 0xff;
     adts[1] = 0xf9;
     adts[2] = (2 - 1) << 6; // profile, AAC-LC
@@ -709,12 +834,12 @@ int r2f_record_audio(RUA * p_rua, uint8 * pdata, int len)
 {
     int ret = -1, codec;
 
-    if (p_rua->rtsp_flag)
+    if (p_rua->rtsp_flag && p_rua->rtsp)
     {
         codec = p_rua->rtsp->audio_codec();
     }
 #ifdef RTMP_STREAM    
-    else if (p_rua->rtmp_flag)
+    else if (p_rua->rtmp_flag && p_rua->rtmp)
     {
         codec = p_rua->rtmp->audio_codec();
     }
@@ -755,47 +880,37 @@ int r2f_record_audio(RUA * p_rua, uint8 * pdata, int len)
     return ret;
 }
 
-int r2f_record_video_ex(RUA * p_rua, uint8 * pdata, int len, uint32 ts)
+int r2f_record_video_internal(RUA * p_rua, uint8 * pdata, int len, int codec)
 {
-    int codec;
-    
-    if (p_rua->rtsp_flag)
-    {
-        codec = p_rua->rtsp->video_codec();
-    }
-#ifdef RTMP_STREAM    
-    else if (p_rua->rtmp_flag)
-    {
-        codec = p_rua->rtmp->video_codec();
-    }
-#endif
-#ifdef MJPEG_STREAM
-    else if (p_rua->mjpeg_flag)
-    {
-        codec = VIDEO_CODEC_JPEG;
-    }
-#endif
-
-    else 
-    {
-        return -1;
-    }
-    
     if (R2F_FMT_AVI == p_rua->filefmt)
     {
         AVICTX * p_avictx = p_rua->avictx;
         
         if (p_avictx->v_fps == 0)
         {
-            avi_calc_fps(p_avictx, pdata, len, ts);
+            avi_calc_fps(p_avictx, pdata, len);
         }
 
         if (p_avictx->v_width == 0 || p_avictx->v_height == 0)
         {
+#ifdef VIDEO_CONV
+            if (NULL == p_rua->vencoder && codec == VIDEO_CODEC_JPEG)
+            {
+                memcpy(p_avictx->v_fcc, "JPEG", 4); // Temporarily modified to JPEG format
+            }
+#endif
             avi_parse_video_size(p_avictx, pdata, len);
             
             if (p_avictx->v_width && p_avictx->v_height)
             {
+#ifdef VIDEO_CONV
+                if (codec == VIDEO_CODEC_JPEG)
+                {
+                    r2f_init_video_recodec(p_rua, codec, p_avictx->v_width, p_avictx->v_height, p_rua->framerate);
+
+                    memcpy(p_avictx->v_fcc, "H264", 4); // Cancel temporary modification
+                }
+#endif
                 avi_update_header(p_avictx);
             }
         }
@@ -814,7 +929,16 @@ int r2f_record_video_ex(RUA * p_rua, uint8 * pdata, int len, uint32 ts)
         }  
         else if (VIDEO_CODEC_JPEG == codec)
         {
+#ifdef VIDEO_CONV
+            if (p_rua->vdecoder)
+            {
+                p_rua->vdecoder->decode(pdata, len);
+            }
+            
+            return 0;
+#else
             key = 1;
+#endif
         }
         
         avi_write_video(p_avictx, pdata, len, key);
@@ -823,18 +947,32 @@ int r2f_record_video_ex(RUA * p_rua, uint8 * pdata, int len, uint32 ts)
     else if (R2F_FMT_MP4 == p_rua->filefmt)
     {
         MP4CTX * p_mp4ctx = p_rua->mp4ctx;
-        if (p_mp4ctx == NULL) return 0;
+        
         if (p_mp4ctx->v_fps == 0)
         {
-            mp4_calc_fps(p_mp4ctx, pdata, len, ts);
+            mp4_calc_fps(p_mp4ctx, pdata, len);
         }
 
         if (p_mp4ctx->v_width == 0 || p_mp4ctx->v_height == 0)
         {
+#ifdef VIDEO_CONV
+            if (NULL == p_rua->vencoder && codec == VIDEO_CODEC_JPEG)
+            {
+                memcpy(p_mp4ctx->v_fcc, "JPEG", 4); // Temporarily modified to JPEG format
+            }
+#endif        
             mp4_parse_video_size(p_mp4ctx, pdata, len);
             
             if (p_mp4ctx->v_width && p_mp4ctx->v_height)
             {
+#ifdef VIDEO_CONV
+                if (codec == VIDEO_CODEC_JPEG)
+                {
+                    r2f_init_video_recodec(p_rua, codec, p_mp4ctx->v_width, p_mp4ctx->v_height, p_rua->framerate);
+
+                    memcpy(p_mp4ctx->v_fcc, "H264", 4); // Cancel temporary modification
+                }
+#endif 
                 mp4_update_header(p_mp4ctx);
             }
         }
@@ -853,7 +991,16 @@ int r2f_record_video_ex(RUA * p_rua, uint8 * pdata, int len, uint32 ts)
         }  
         else if (VIDEO_CODEC_JPEG == codec)
         {
+#ifdef VIDEO_CONV
+            if (p_rua->vdecoder)
+            {
+                p_rua->vdecoder->decode(pdata, len);
+            }
+            
+            return 0;
+#else
             key = 1;
+#endif            
         }
         
         mp4_write_video(p_mp4ctx, pdata, len, key);
@@ -872,31 +1019,8 @@ int r2f_record_video_ex(RUA * p_rua, uint8 * pdata, int len, uint32 ts)
 	return 0;
 }
 
-int r2f_record_video(RUA * p_rua, uint8 * pdata, int len, uint32 ts)
+int r2f_record_video_ex(RUA * p_rua, uint8 * pdata, int len, int codec)
 {
-    int codec;
-    
-    if (p_rua->rtsp_flag)
-    {
-        codec = p_rua->rtsp->video_codec();
-    }
-#ifdef RTMP_STREAM    
-    else if (p_rua->rtmp_flag)
-    {
-        codec = p_rua->rtmp->video_codec();
-    }
-#endif
-#ifdef MJPEG_STREAM
-    else if (p_rua->mjpeg_flag)
-    {
-        codec = VIDEO_CODEC_JPEG;
-    }
-#endif
-    else 
-    {
-        return -1;
-    }
-
     if (VIDEO_CODEC_H264 == codec || VIDEO_CODEC_H265 == codec)
     {
         int s_len = 0, n_len = 0, parse_len = len;
@@ -907,10 +1031,12 @@ int r2f_record_video(RUA * p_rua, uint8 * pdata, int len, uint32 ts)
     		uint8 * p_next = avc_split_nalu(p_cur, parse_len, &s_len, &n_len);
     		if (n_len < 5)
     		{
+    		    // without start code
+    		    r2f_record_video_internal(p_rua, p_cur, parse_len, codec);
     			return 0;
             }
 
-    		r2f_record_video_ex(p_rua, p_cur, n_len, ts);
+    		r2f_record_video_internal(p_rua, p_cur, n_len, codec);
     		
     		parse_len -= n_len;
     		p_cur = p_next;
@@ -918,10 +1044,38 @@ int r2f_record_video(RUA * p_rua, uint8 * pdata, int len, uint32 ts)
 	}
 	else
 	{
-	    r2f_record_video_ex(p_rua, pdata, len, ts);
+	    r2f_record_video_internal(p_rua, pdata, len, codec);
 	}
 
 	return 0;
+}
+
+int r2f_record_video(RUA * p_rua, uint8 * pdata, int len)
+{
+    int codec;
+    
+    if (p_rua->rtsp_flag && p_rua->rtsp)
+    {
+        codec = p_rua->rtsp->video_codec();
+    }
+#ifdef RTMP_STREAM    
+    else if (p_rua->rtmp_flag && p_rua->rtmp)
+    {
+        codec = p_rua->rtmp->video_codec();
+    }
+#endif
+#ifdef MJPEG_STREAM
+    else if (p_rua->mjpeg_flag && p_rua->mjpeg)
+    {
+        codec = VIDEO_CODEC_JPEG;
+    }
+#endif
+    else 
+    {
+        return -1;
+    }
+
+    return r2f_record_video_ex(p_rua, pdata, len, codec);
 }
 
 void r2f_notify_handler(RUA * p_rua, uint32 evt)
@@ -1220,7 +1374,7 @@ BOOL r2f_switch_check(RUA * p_rua)
     else if (p_rua->filefmt == R2F_FMT_MP4)
     {
         MP4CTX * p_ctx = p_rua->mp4ctx;
-        if (p_ctx == NULL) return FALSE;
+        if (p_ctx!=NULL)
         tlen = gf_isom_get_file_size(p_ctx->handler);
     }
 #endif
@@ -1435,16 +1589,15 @@ void r2f_file_switch(RUA * p_rua)
     log_print(HT_LOG_DBG, "%s, exit\r\n", __FUNCTION__);
 }
 
-
-BOOL r2f_init(STREAM2FILE* p_r2f)
+BOOL r2f_init(STREAM2FILE * p_r2f)
 {
     BOOL ret = FALSE;
-    RUA* p_rua = rua_get_idle();
-    if (NULL == p_rua)
-    {
-        log_print(HT_LOG_ERR, "%s, rua_get_idle return null\r\n", __FUNCTION__);
-        return FALSE;
-    }
+	RUA * p_rua = rua_get_idle();
+	if (NULL == p_rua)
+	{
+		log_print(HT_LOG_ERR, "%s, rua_get_idle return null\r\n", __FUNCTION__);
+		return FALSE;
+	}
 
     p_rua->filefmt = p_r2f->filefmt;
     strcpy(p_rua->url, p_r2f->url);
@@ -1460,26 +1613,32 @@ BOOL r2f_init(STREAM2FILE* p_r2f)
         p_rua->rtsp_flag = 1;
     }
 #ifdef RTMP_STREAM
-    else if (memcmp(p_rua->url, "rtmp://", 7) == 0 ||
-        memcmp(p_rua->url, "rtmpt://", 8) == 0 ||
-        memcmp(p_rua->url, "rtmps://", 8) == 0 ||
-        memcmp(p_rua->url, "rtmpe://", 8) == 0 ||
-        memcmp(p_rua->url, "rtmpfp://", 9) == 0 ||
-        memcmp(p_rua->url, "rtmpte://", 9) == 0 ||
-        memcmp(p_rua->url, "rtmpts://", 9) == 0)
+    else if (memcmp(p_rua->url, "rtmp://", 7) == 0 || 
+        memcmp(p_rua->url, "rtmpt://", 8) == 0 || 
+	    memcmp(p_rua->url, "rtmps://", 8) == 0 || 
+	    memcmp(p_rua->url, "rtmpe://", 8) == 0 || 
+	    memcmp(p_rua->url, "rtmpfp://", 9) == 0 || 
+	    memcmp(p_rua->url, "rtmpte://", 9) == 0 || 
+	    memcmp(p_rua->url, "rtmpts://", 9) == 0)
     {
         p_rua->rtmp_flag = 1;
     }
-#endif    
+#endif
+#ifdef MJPEG_STREAM
+    else if (memcmp(p_rua->url, "http://", 7) == 0 || memcmp(p_rua->url, "https://", 8) == 0)
+    {
+        p_rua->mjpeg_flag = 1;
+    }
+#endif
     else
     {
         rua_set_idle(p_rua);
-
+        
         log_print(HT_LOG_ERR, "%s, invalid url %s\r\n", __FUNCTION__, p_rua->url);
-        return FALSE;
+		return FALSE;
     }
-
-    if (!r2f_filepath(p_rua->url, p_rua->cfgpath, p_rua->filefmt, p_rua->savepath, sizeof(p_rua->savepath) - 1))
+    
+    if (!r2f_filepath(p_rua->url, p_rua->cfgpath, p_rua->filefmt, p_rua->savepath, sizeof(p_rua->savepath)-1))
     {
         rua_set_idle(p_rua);
 
@@ -1513,20 +1672,26 @@ BOOL r2f_init(STREAM2FILE* p_r2f)
 #endif    
     else
     {
-        rua_set_idle(p_rua);
+        rua_set_idle(p_rua);        
 
         log_print(HT_LOG_ERR, "%s, invalid file format %d.\r\n", __FUNCTION__, p_rua->filefmt);
         return FALSE;
     }
 
     if (p_rua->rtsp_flag)
-    {
+    {    
         p_rua->rtsp = new CRtspClient;
     }
 #ifdef RTMP_STREAM    
     else if (p_rua->rtmp_flag)
     {
         p_rua->rtmp = new CRtmpClient;
+    }
+#endif
+#ifdef MJPEG_STREAM
+    else if (p_rua->mjpeg_flag)
+    {
+        p_rua->mjpeg = new CHttpMjpeg();
     }
 #endif
 
@@ -1550,15 +1715,15 @@ BOOL r2f_init(STREAM2FILE* p_r2f)
         }
 #endif
 
-        rua_set_idle(p_rua);
+        rua_set_idle(p_rua);        
 
         log_print(HT_LOG_ERR, "%s, new failed\r\n", __FUNCTION__);
         return FALSE;
     }
-
+    
     rua_set_online(p_rua);
 
-    return r2f_rua_start(p_rua);
+	return r2f_rua_start(p_rua);
 }
 BOOL r2f_init_ex(STREAM2FILE* p_r2f, char* strfilename, int pnum)
 {
@@ -1705,20 +1870,21 @@ BOOL r2f_init_ex(STREAM2FILE* p_r2f, char* strfilename, int pnum)
 
 #define DB_NAME "simprec_use"
 
-BOOL r2f_start(char * pid)
+BOOL r2f_start(char* pid)
 {
-    printf("IBST Record Server V%d.%d[for %s]\r\n", R2F_MAJOR_VERSION, R2F_MINOR_VERSION,pid);
+    printf("IBST Record Server V%d.%d[for %s]\r\n", R2F_MAJOR_VERSION, R2F_MINOR_VERSION, pid);
     if (!r2f_read_config())
     {
         log_print(HT_LOG_ERR, "%s, r2f_read_config failed\r\n", __FUNCTION__);
-		return FALSE;
+        return FALSE;
     }
     char lfname[256];
 
     sprintf(lfname, ".\\log\\ibstrecord_%s.log", pid);
+
     if (g_r2f_cfg.log_enable)
 	{
-		log_init(lfname);
+		log_init("stream2file.log");
 		log_set_level(g_r2f_cfg.log_level);
 	}
 
@@ -1791,7 +1957,7 @@ BOOL r2f_start(char * pid)
     else
         sprintf_s(query, "select SEQ,CMD,ARG,NO,STATUS,ARG2 from cmdq where STATUS='Y' AND room >=%s AND room <=%s AND no=%s ORDER BY SEQ", start, end, pid);
     int complete = 0;
-    while (complete==0)
+    while (complete == 0)
     {
         if (mysql_query(&mysql, query))
         {	// ???? ??u
@@ -1843,7 +2009,7 @@ BOOL r2f_start(char * pid)
                             sprintf(pass, "12345");
                         }
                         else
-                        sprintf(address2, "rtsp://%s", add);
+                            sprintf(address2, "rtsp://%s", add);
                         //  m_process[m_num] = atoi(row[3]);
                         STREAM2FILE* testr2f;
                         testr2f = (STREAM2FILE*)malloc(sizeof(STREAM2FILE));
@@ -1866,10 +2032,11 @@ BOOL r2f_start(char * pid)
                         sprintf(fname2, "%s", filename);
                         if (!r2f_init_ex(testr2f, fname2, atoi(row[3])))
                         {
+                            printf("%s, r2f_init failed, %s\r\n", __FUNCTION__, testr2f->url);
                             log_print(HT_LOG_ERR, "%s, r2f_init failed, %s\r\n", __FUNCTION__, testr2f->url);
                         }
-                        log_print(HT_LOG_INFO, "[%s],%d record process is started \n", __FUNCTION__, atoi(row[3]));
-                        printf("[%s],%d record process is started \n", __FUNCTION__, atoi(row[3]));
+                        log_print(HT_LOG_INFO, "[%s],%d record process is started[%s] \n", __FUNCTION__, atoi(row[3]),fname2);
+                        printf("[%s],%d record process is started[%s] \n", __FUNCTION__, atoi(row[3]), fname2);
                         char sqlcmd[256];
                         sprintf_s(sqlcmd, "UPDATE cmdq SET STATUS = 'N' where seq=%s", row[0]);
                         mysql_query(&mysql, sqlcmd);
@@ -1959,7 +2126,7 @@ BOOL r2f_start(char * pid)
                 catch (int exceptionCode)
                 {
                     log_print(HT_LOG_ERR, "Error %d in command proccesing\n", exceptionCode);
-                    printf( "Error %d in command proccesing\n", exceptionCode);
+                    printf("Error %d in command proccesing\n", exceptionCode);
                 }
             }
         if (m_Res)
@@ -1967,10 +2134,9 @@ BOOL r2f_start(char * pid)
             mysql_free_result(m_Res);
         }
         Sleep(100);
-        }
+    }
 
-
-    /*STREAM2FILE * p_r2f = g_r2f_cfg.r2f;
+/*	STREAM2FILE * p_r2f = g_r2f_cfg.r2f;
 	while (p_r2f)
 	{
 		if (!r2f_init(p_r2f))
@@ -2040,6 +2206,20 @@ void r2f_stop()
         }
 #endif
 
+#endif
+
+#ifdef VIDEO_CONV
+        if (p_rua->vdecoder)
+        {
+            delete p_rua->vdecoder;
+            p_rua->vdecoder = NULL;
+        }
+
+        if (p_rua->vencoder)
+        {
+            delete p_rua->vencoder;
+            p_rua->vencoder = NULL;
+        }
 #endif
 
         rua_set_idle(p_rua);

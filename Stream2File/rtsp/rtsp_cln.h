@@ -80,25 +80,131 @@ public:
 	void    set_video_cb(video_cb cb);
 	void    set_audio_cb(audio_cb cb);
 	void    set_metadata_cb(metadata_cb cb);
+
+	/**
+      * @desc : Set rtp multicast 
+      * @params :
+      *    flag : 1 - enable rtp multcast, 0 - disable rtp multcast
+      */
 	void    set_rtp_multicast(int flag);
+
+	/**
+      * @desc : Set rtp over udp 
+      * @params :
+      *    flag : 1 - enable rtp over udp, 0 - disable rtp over udp
+      */
 	void    set_rtp_over_udp(int flag);
+
+	/**
+      * @desc : Set rtsp over http 
+      * @params :
+      *    flag : 1 - enable rtsp over http, 0 - disable rtsp over http
+      *    port : if flag = 1, specify the http port
+      */
 	void    set_rtsp_over_http(int flag, int port);
-	
+
+    /**
+      * @desc : Set the data rx timeout, if the data is not received within the specified time, 
+      *         send RTSP_EVE_NODATA notification
+      * @params :
+      *    timeout : Timeout value, unit is second
+      */
+	void    set_rx_timeout(int timeout);
+
+	/**
+      * @desc : Get H264, SPS, PPS parameters, and return through the video callback function
+      */
 	void 	get_h264_params();
+
+	/**
+      * @desc : Get H264, SPS, PPS parameters
+      * @params
+      *     p_sps : Receive H264 SPS data, the buffer size is not less than 256
+      *     sps_len : Receive H264 SPS buffer length
+      *     p_pps : Receive H264 PPS data, the buffer size is not less than 256
+      *     pps_len : Receive H264 PPS buffer length
+      */
 	BOOL 	get_h264_params(uint8 * p_sps, int * sps_len, uint8 * p_pps, int * pps_len);
+
+	/**
+      * @desc : Get H265, VPS, SPS, PPS parameters, and return through the video callback function
+      */
 	void 	get_h265_params();
+
+	/**
+      * @desc : Get H265, VPS, SPS, PPS parameters
+      * @params
+      *     p_sps : Receive H264 SPS data, the buffer size is not less than 256
+      *     sps_len : Receive H264 SPS buffer length
+      *     p_pps : Receive H264 PPS data, the buffer size is not less than 256
+      *     pps_len : Receive H264 PPS buffer length
+      *     p_vps : Receive H264 VPS data, the buffer size is not less than 256
+      *     vps_len : Receive H264 VPS buffer length
+      */
 	BOOL    get_h265_params(uint8 * p_sps, int * sps_len, uint8 * p_pps, int * pps_len, uint8 * p_vps, int * vps_len);
+
+    /**
+      * @desc : If the describe request response returned by the server has an H264 SDP description, get the H264 SDP description
+      * @params
+      *     p_sdp : Receive H264 SDP description
+      *     max_len : Maximum length of buffer p_sdp
+      */
 	BOOL    get_h264_sdp_desc(char * p_sdp, int max_len);
+
+	/**
+      * @desc : If the describe request response returned by the server has an H265 SDP description, get the H265 SDP description
+      * @params
+      *     p_sdp : Receive H265 SDP description
+      *     max_len : Maximum length of buffer p_sdp
+      */
 	BOOL    get_h265_sdp_desc(char * p_sdp, int max_len);
+
+	/**
+      * @desc : If the describe request response returned by the server has an H265 SDP description, get the MP4 SDP description
+      * @params
+      *     p_sdp : Receive MP4 SDP description
+      *     max_len : Maximum length of buffer p_sdp
+      */
 	BOOL    get_mp4_sdp_desc(char * p_sdp, int max_len);
+
+	/**
+      * @desc : If the describe request response returned by the server has an H265 SDP description, get the AAC SDP description
+      * @params
+      *     p_sdp : Receive AAC SDP description
+      *     max_len : Maximum length of buffer p_sdp
+      */
 	BOOL    get_aac_sdp_desc(char * p_sdp, int max_len);
 
+    /**
+      * @desc : Get video codec
+      * @retrun : reference the media_format.h, VIDEO_CODEC_H264, ...
+      */
 	int     audio_codec() {return m_AudioCodec;}
+
+	/**
+      * @desc : Get audio codec
+      * @retrun : reference the media_format.h, AUDIO_CODEC_AAC, ...
+      */
 	int     video_codec() {return m_VideoCodec;}
-	
+
+	/**
+      * @desc : Get audio sample rate
+      */
 	int     get_audio_samplerate() {return m_nSamplerate;}
+
+	/**
+      * @desc : Get audio channel numbers
+      */
 	int     get_audio_channels() {return m_nChannels;}
+
+	/**
+      * @desc : Get audio config data, for AAC
+      */
 	uint8 * get_audio_config() {return m_pAudioConfig;}
+
+	/**
+      * @desc : Get audio config data length, for AAC
+      */
 	int     get_audio_config_len() {return m_nAudioConfigLen;}
 
     /**
@@ -249,6 +355,7 @@ private:
 	audio_cb        m_pAudioCB;
 	metadata_cb     m_pMetadataCB;
 	void *			m_pMutex;
+	int             m_nRxTimeout;
 
     union {
 	    H264RXI     h264rxi;

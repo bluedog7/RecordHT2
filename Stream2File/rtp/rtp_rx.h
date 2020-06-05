@@ -21,7 +21,7 @@
 #define RTP_RX_H
 
 
-#define RTP_MAX_VIDEO_BUFF      (1024*1024)
+#define RTP_MAX_VIDEO_BUFF      (2*1024*1024)
 #define RTP_MAX_AUDIO_BUFF      (8*1024)
 
 

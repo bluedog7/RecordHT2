@@ -252,35 +252,28 @@ BOOL h264_data_rx(H264RXI * p_rxi, uint8 * p_data, int len)
 		log_print(HT_LOG_ERR, "%s, fragment packet too big %d!!!", __FUNCTION__, p_rxi->d_offset + 4 + packetSize - numBytesToSkip);
 		return FALSE;
 	}
+
+	if (fCurrentPacketBeginsFrame)
+	{
+	    p_rxi->p_buf[p_rxi->d_offset + 0] = 0;
+    	p_rxi->p_buf[p_rxi->d_offset + 1] = 0;
+    	p_rxi->p_buf[p_rxi->d_offset + 2] = 0;
+    	p_rxi->p_buf[p_rxi->d_offset + 3] = 1;
+    	p_rxi->d_offset += 4;
+	}
 	
-	memcpy(p_rxi->p_buf + p_rxi->d_offset + 4, headerStart + numBytesToSkip, packetSize - numBytesToSkip);
+	memcpy(p_rxi->p_buf + p_rxi->d_offset, headerStart + numBytesToSkip, packetSize - numBytesToSkip);
 	p_rxi->d_offset += packetSize - numBytesToSkip;
 
-	if (fCurrentPacketCompletesFrame)
+	if (p_rxi->rtprxi.rxf_marker)
 	{
-		if (p_rxi->rtprxi.rxf_marker)
-		{
-    		p_rxi->p_buf[0] = 0;
-    		p_rxi->p_buf[1] = 0;
-    		p_rxi->p_buf[2] = 0;
-    		p_rxi->p_buf[3] = 1;
+		if (p_rxi->pkt_func)
+  		{
+  			p_rxi->pkt_func(p_rxi->p_buf, p_rxi->d_offset, p_rxi->rtprxi.prev_ts, p_rxi->rtprxi.prev_seq, p_rxi->user_data);
+  		}
 
-    		if (p_rxi->pkt_func)
-      		{
-      			p_rxi->pkt_func(p_rxi->p_buf, p_rxi->d_offset + 4, p_rxi->rtprxi.prev_ts, p_rxi->rtprxi.prev_seq, p_rxi->user_data);
-      		}
-
-    		p_rxi->d_offset = 0;
-		}
-		else
-		{
-		    p_rxi->p_buf[p_rxi->d_offset + 4 + 0] = 0;
-    		p_rxi->p_buf[p_rxi->d_offset + 4 + 1] = 0;
-    		p_rxi->p_buf[p_rxi->d_offset + 4 + 2] = 0;
-    		p_rxi->p_buf[p_rxi->d_offset + 4 + 3] = 1;
-    		p_rxi->d_offset += 4;
-		}
-	} 
+		p_rxi->d_offset = 0;
+	}
 
 	return TRUE;
 }

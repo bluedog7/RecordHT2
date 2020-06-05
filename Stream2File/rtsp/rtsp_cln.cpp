@@ -120,7 +120,9 @@ void CRtspClient::set_default()
     m_rua.rtp_tcp = 1;  // default RTP over RTSP
 	m_rua.session_timeout = 60;
 	strcpy(m_rua.user_agent, "happytimesoft rtsp client");
-        
+
+    m_nRxTimeout = 10;  // default 10s timeout
+    
     m_pAudioConfig = NULL;
     m_nAudioConfigLen = 0;
         
@@ -800,6 +802,9 @@ BOOL CRtspClient::rtsp_play_res(RCUA * p_rua, HRTSP_MSG * rx_msg)
 		p_rua->state = RCS_PLAYING;
 		p_rua->keepalive_time = sys_os_get_ms();
 
+        // Session
+		rtsp_get_session_info(rx_msg, p_rua->sid, sizeof(p_rua->sid)-1, &p_rua->session_timeout);
+		
 		log_print(HT_LOG_DBG, "%s, session timeout : %d\n", __FUNCTION__, p_rua->session_timeout);
 
 		if (m_AudioCodec == AUDIO_CODEC_AAC)
@@ -1177,7 +1182,7 @@ void CRtspClient::set_scale(double scale)
     if (scale != 0)
     {
         m_rua.scale_flag = 1;
-        m_rua.scale = scale * 100;
+        m_rua.scale = (int)(scale * 100);
     }
     else
     {
@@ -1722,7 +1727,7 @@ int CRtspClient::rtsp_tcp_rx()
 	
     int sret;
     fd_set fdread;
-    struct timeval tv = {0, 100*1000};
+    struct timeval tv = {1, 0};
 
     FD_ZERO(&fdread);
     FD_SET(fd, &fdread); 
@@ -1748,7 +1753,7 @@ int CRtspClient::rtsp_tcp_rx()
 
 		p_rua->rcv_dlen += rlen;
 
-		if (p_rua->rcv_dlen < 16)
+		if (p_rua->rcv_dlen < 4)
 		{
 			return RTSP_RX_SUCC;
 		}
@@ -1790,7 +1795,7 @@ rx_point:
 			return RTSP_RX_SUCC;
 		}
 
-		if (p_rua->rcv_dlen >= 16)
+		if (p_rua->rcv_dlen >= 4)
 		{
 			goto rx_point;
 		}
@@ -1801,7 +1806,23 @@ rx_point:
 		if (p_rilf->magic != 0x24)
 		{		
 			log_print(HT_LOG_WARN, "%s, p_rilf->magic[0x%02X]!!!\r\n", __FUNCTION__, p_rilf->magic);
-			return RTSP_RX_FAIL;
+
+            // Try to recover from wrong data
+            
+			for (int i = 1; i <= p_rua->rcv_dlen - 4; i++)
+			{
+				if (p_rua->rcv_buf[i] == 0x24 &&
+					(p_rua->rcv_buf[i+1] == p_rua->channels[AV_VIDEO_CH].interleaved ||
+					 p_rua->rcv_buf[i+1] == p_rua->channels[AV_AUDIO_CH].interleaved))
+				{
+					memmove(p_rua->rcv_buf, p_rua->rcv_buf+i, p_rua->rcv_dlen - i);
+					p_rua->rcv_dlen -= i;
+					goto rx_point;
+				}
+			}
+
+			p_rua->rcv_dlen = 0;
+			return RTSP_RX_SUCC;
 		}
 		
 		uint16 rtp_len = ntohs(p_rilf->rtp_len);
@@ -1835,7 +1856,7 @@ rx_point:
 			memmove(p_rua->rcv_buf, p_rua->rcv_buf+rtp_len+4, p_rua->rcv_dlen);
 		}
 
-		if (p_rua->rcv_dlen >= 16)
+		if (p_rua->rcv_dlen >= 4)
 		{
 			goto rx_point;
 		}
@@ -1860,7 +1881,7 @@ int CRtspClient::rtsp_udp_rx()
         }
     }
 
-	struct timeval tv = {0, 100*1000};
+	struct timeval tv = {1, 0};
 
 	int sret = select(max_fd+1, &fdr, NULL, NULL, &tv);
 	if (sret <= 0)
@@ -2370,7 +2391,7 @@ void CRtspClient::tcp_rx_thread()
 		    if (ret == RTSP_RX_TIMEOUT)
 	    	{
 	    		tm_count++;
-		        if (tm_count >= 100 && !nodata_notify)    // in 10s without data
+		        if (tm_count >= m_nRxTimeout && !nodata_notify)    // in 10s without data
 		        {
 		            nodata_notify = TRUE;
 		            send_notify(RTSP_EVE_NODATA);
@@ -2437,7 +2458,7 @@ void CRtspClient::udp_rx_thread()
 	    else if (ret == RTSP_RX_TIMEOUT)
     	{
     		tm_count++;
-	        if (tm_count >= 100 && !nodata_notify)    // in 10s without data
+	        if (tm_count >= m_nRxTimeout && !nodata_notify)    // in 10s without data
 	        {
 	            nodata_notify = TRUE;
 	            send_notify(RTSP_EVE_NODATA);
@@ -2823,6 +2844,11 @@ void CRtspClient::set_rtp_over_udp(int flag)
     {
         m_rua.rtp_tcp = 1;
     }
+}
+
+void CRtspClient::set_rx_timeout(int timeout)
+{
+    m_nRxTimeout = timeout;
 }
 
 

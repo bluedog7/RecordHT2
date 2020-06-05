@@ -372,6 +372,8 @@ extern "C"
   int RTMP_HashSWF(const char *url, unsigned int *size, unsigned char *hash,
 		   int age);
 
+  void HandleChangeChunkSize(RTMP *r, const RTMPPacket *packet);
+
 #ifdef __cplusplus
 };
 #endif

@@ -35,6 +35,10 @@
 #ifdef MJPEG_STREAM
 #include "http_mjpeg_cln.h"
 #endif
+#ifdef VIDEO_CONV
+#include "video_decoder.h"
+#include "video_encoder.h"
+#endif
 
 #ifdef DEMO
 #define MAX_NUM_RUA			2
@@ -81,6 +85,11 @@ typedef struct
     CAudioDecoder * adecoder;   // audio decoder
     CAudioEncoder * aencoder;   // audio encoder
 #endif
+#endif
+
+#ifdef VIDEO_CONV
+    CVideoDecoder * vdecoder;   // video decoder
+    CVideoEncoder * vencoder;   // video encoder
 #endif
 } RUA;
 

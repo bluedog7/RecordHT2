@@ -127,7 +127,7 @@ static int SendBGHasStream(RTMP *r, double dId, AVal *playpath);
 
 static int HandleInvoke(RTMP *r, const char *body, unsigned int nBodySize);
 static int HandleMetadata(RTMP *r, char *body, unsigned int len);
-static void HandleChangeChunkSize(RTMP *r, const RTMPPacket *packet);
+//static void HandleChangeChunkSize(RTMP *r, const RTMPPacket *packet);
 static void HandleAudio(RTMP *r, const RTMPPacket *packet);
 static void HandleVideo(RTMP *r, const RTMPPacket *packet);
 static void HandleCtrl(RTMP *r, const RTMPPacket *packet);
@@ -3378,7 +3378,7 @@ HandleMetadata(RTMP *r, char *body, unsigned int len)
   return ret;
 }
 
-static void
+void
 HandleChangeChunkSize(RTMP *r, const RTMPPacket *packet)
 {
   if (packet->m_nBodySize >= 4)

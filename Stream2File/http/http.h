@@ -20,6 +20,9 @@
 #ifndef	__H_HTTP_H__
 #define	__H_HTTP_H__
 
+#include "ppstack.h"
+#include "sys_buf.h"
+
 #ifdef HTTPS
 #include "openssl/ssl.h"
 #endif
@@ -74,84 +77,124 @@ typedef struct _http_msg_content
 
 	uint32	    remote_ip;
 	uint16	    remote_port;
-	uint16	    local_port;
 } HTTPMSG;
 
 /*************************************************************************/
 typedef struct http_client
 {
-	SOCKET      cfd;
-	uint32	    rip;
-	uint32	    rport;
+	SOCKET      cfd;                // client socket
+	uint32	    rip;                // remote ip, network byte order
+	uint32	    rport;              // remote port
+	
+	char        lip[128];           // local server address
+	uint32      lport;              // local server port
 
-	uint32	    guid;
+	char        rcv_buf[2048];      // static receiving buffer
+	char *      dyn_recv_buf;       // dynamic receiving buffer
+	int         rcv_dlen;           // received data length
+	int         hdr_len;            // http header length
+	int	        ctt_len;            // context  length
+	HTTPCTT     ctt_type;           // context type
+	char *      p_rbuf;				// pointer to rcv_buf or dyn_recv_buf
+	int         mlen;				// sizeof(rcv_buf) or size of dyn_recv_buf
 
-	char        rcv_buf[2048];
-	char *      dyn_recv_buf;
-	int         rcv_dlen;
-	int         hdr_len;
-	int	        ctt_len;
-	char *      p_rbuf;				// --> rcv_buf or dyn_recv_buf
-	int         mlen;				// = sizeof(rcv_buf) or size of dyn_recv_buf
+    void *      p_srv;              // pointer to HTTPSRV
+    int         use_count;          // use count
+    
+#ifdef RTSP_OVER_HTTP
+    BOOL        rtsp_over_http;     // rtsp over http flag
+	void *      p_rua;              // rtsp user agent
+#endif
+
+#ifdef HTTPS
+	SSL *       ssl;                // https SSL 
+#endif	
 } HTTPCLN;
 
 typedef struct http_req
-{	
-	SOCKET      cfd;    
-	uint32	    port;
-	char	    host[256];
-	char	    url[256];
-	char	    user[64];
-	char	    pass[64];
+{
+    uint32      need_auth : 1;      // need auth flag
+    uint32      https     : 1;      // https flag
+    uint32      resv      : 30;
+    
+	SOCKET      cfd;                // client socket    
+	uint32	    port;               // server port
+	char	    host[256];          // server host
+	char	    url[256];           // the request url
+	char	    user[64];           // login username
+	char	    pass[64];           // login password
 
-	char 	    action[256];
-	char	    rcv_buf[2048];
-	char *	    dyn_recv_buf;
-	int		    rcv_dlen;
-	int		    hdr_len;
-	int		    ctt_len;
-	char        boundary[256];
-	char *	    p_rbuf;				// --> rcv_buf or dyn_recv_buf
-	int		    mlen;				// = sizeof(rcv_buf) or size of dyn_recv_buf
+	char 	    action[256];        // action
+	char	    rcv_buf[2048];      // static receiving buffer
+	char *	    dyn_recv_buf;       // dynamic receiving buffer
+	int		    rcv_dlen;           // received data length
+	int		    hdr_len;            // http header length            
+	int		    ctt_len;            // context  length
+	char        boundary[256];      // boundary, for CTT_MULTIPART
+	char *	    p_rbuf;				// pointer to rcv_buf or dyn_recv_buf
+	int		    mlen;				// sizeof(rcv_buf) or size of dyn_recv_buf
 
-	HTTPMSG *   rx_msg;
+	HTTPMSG *   rx_msg;             // rx message
 
-	BOOL 	    need_auth;
 	int  	    auth_mode;    		// 0 - baisc; 1 - digest
-	HD_AUTH_INFO auth_info;
-
-	int         https;
+	HD_AUTH_INFO auth_info;         // http auth information
 	
 #ifdef HTTPS
-	SSL *       ssl;
+	SSL *       ssl;                // https SSL 
 #endif
 } HTTPREQ;
 
 /*************************************************************************/
+
+/* 
+ * If rx_msg is NULL, the callback should call the http_free_used_cln function to delete p_cln
+ * If the callback is responsible for deleting rx_msg, it returns TRUE, otherwise it returns FALSE
+ */
+typedef BOOL (*http_srv_callback)(void * p_srv, HTTPCLN * p_cln, HTTPMSG * rx_msg, void * userdata);
+
+typedef void (*http_rtsp_callback)(void * p_srv, HTTPCLN * p_cln, char * buff, int buflen, void * userdata);
+
 typedef struct http_srv_s
 {
-	int         r_flag;
+    uint32      r_flag  : 1;        // data receiving flag
+    uint32      https   : 1;        // https flag
+    uint32      resv    : 30;
+    
+	SOCKET      sfd;                // server socket
 
-	SOCKET      sfd;
-	int         sport;
-	uint32	    saddr;
+    char        host[128];          // local server address
+	int         sport;              // server port
+	uint32	    saddr;              // server address, network byte order
+    uint32      max_cln_nums;       // max client number
 
-	uint32	    guid;
+	PPSN_CTX *  cln_fl;             // client free list
+	PPSN_CTX *  cln_ul;             // client used list
 
-	PPSN_CTX *  cln_fl;
-	PPSN_CTX *  cln_ul;
+	pthread_t   rx_tid;             // data receiving thread id
 
-	pthread_t   rx_tid;
+    void *      mutex_cb;           // cabllback mutex
+    http_srv_callback callback;     // callback function pointer
+	void *      userdata;           // user data
+
+#ifdef EPOLL
+    int         ep_fd;              // epoll fd
+	struct epoll_event * ep_events; // epoll events
+	int         ep_event_num;       // epoll event number    
+#endif
+	
+#ifdef HTTPS
+    char        cert_file[256];     // cert file name
+    char        key_file[256];      // key file name
+  	SSL_CTX *   ssl_ctx;            // ssl context
+#endif
+
+#ifdef RTSP_OVER_HTTP
+    http_rtsp_callback  rtsp_cb;    // rtsp over http callback
+    void *      rtsp_userdata;      // rtsp over http callback user data
+#endif
 } HTTPSRV;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif	//	__H_HTTP_H__
 
