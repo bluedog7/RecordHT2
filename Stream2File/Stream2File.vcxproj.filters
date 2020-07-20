@@ -42,6 +42,9 @@
     <ClInclude Include="rtmp\rtmp_cln.h">
       <Filter>rtmp</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bm\base64.cpp">
@@ -200,5 +203,10 @@
     <ClCompile Include="media\video_encoder.cpp">
       <Filter>media</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="RecordHT.rc">
+      <Filter>Resource files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

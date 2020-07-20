@@ -1,20 +1,2 @@
-[2020-06-05 17:41:49] : [INFO] net_buf_init, num = 400
-[2020-06-05 17:41:49] : [INFO] hdrv_buf_init, num = 3200
-[2020-06-05 17:41:49] : [INFO] [r2f_start],29173 record process is started[D:\simprec_use\simprec_use\mov\1384472507\2\10009_2_1591341152.mp4] 
-[2020-06-05 17:41:49] : [DEBUG] r2f_notify_callback, event = 21
-[2020-06-05 17:41:49] : [DEBUG] TX >> GET  HTTP/1.1
-Host: 118.39.27.87:8080
-Accept: */*
-User-Agent: happytimesoft/1.0
-Range: bytes=0-
-
-
-[2020-06-05 17:41:49] : [DEBUG] RX from 118.39.27.87 << HTTP/1.1 200 OK
-Content-Type: multipart/x-mixed-replace; boundary=--boundary
-
-
-[2020-06-05 17:41:49] : [DEBUG] r2f_notify_callback, event = 23
-[2020-06-05 17:41:49] : [INFO] mp4_parse_video_size, MJPEG width[1920],height[1080]
-[2020-06-05 17:41:56] : [DEBUG] mp4_calc_fps, stime=21079671, etime=21086296, frames=30, fps=5
-[2020-06-05 17:42:15] : [INFO] [D:\simprec_use\simprec_use\mov\1384472507\2\10009_2_1591341152.mp4 start time is [8:27:51]][2020-06-05 17:42:15] : [INFO] [r2f_start],[17:42:15] 29173 record process is terminated 
-[2020-06-05 17:42:15] : [INFO] UPDATE kn_simprec_mov SET rtsp_start=21079671 where no=29173
+[2020-07-06 15:32:39] : [INFO] net_buf_init, num = 400
+[2020-07-06 15:32:39] : [INFO] hdrv_buf_init, num = 3200

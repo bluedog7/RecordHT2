@@ -1884,7 +1884,7 @@ BOOL r2f_start(char* pid)
 
     if (g_r2f_cfg.log_enable)
 	{
-		log_init("stream2file.log");
+        log_init(lfname);
 		log_set_level(g_r2f_cfg.log_level);
 	}
 
