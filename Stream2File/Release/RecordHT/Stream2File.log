@@ -46,6 +46,9 @@
   mp4_write.cpp
   r2f.cpp
 F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2026,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2107,51): warning C4477: 'sprintf_s' : 서식 문자열 '%ld'에 'long' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'time_t'입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2107,51): message : 서식 문자열에서 '%lld'을(를) 사용하는 것이 좋습니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2107,51): message : 서식 문자열에서 '%I64d'을(를) 사용하는 것이 좋습니다.
 F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1915,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
 F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1929,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
 F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1978,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.

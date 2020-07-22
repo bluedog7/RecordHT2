@@ -2104,7 +2104,7 @@ BOOL r2f_start(char* pid)
 
 
                                 char sqlcmd[256];
-                                sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%d where no=%d", mov_no, p_rua->pnum);
+                                sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%ld where no=%d", rawtime, p_rua->pnum);
                                 log_print(HT_LOG_INFO, "%s\n", sqlcmd);
                                 printf("%s\n", sqlcmd);
                                 mysql_query(&mysql, sqlcmd);

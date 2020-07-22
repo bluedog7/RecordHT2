@@ -338,6 +338,10 @@ HT_API uint32 sys_os_get_ms()
 #elif __WINDOWS_OS__
 
 	ms = GetTickCount();
+	/*time_t time_now;
+	
+	time(&time_now);
+	ms = time_now;*/
 
 #endif
 
