@@ -45,18 +45,15 @@
   avi_write.cpp
   mp4_write.cpp
   r2f.cpp
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2026,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2107,51): warning C4477: 'sprintf_s' : 서식 문자열 '%ld'에 'long' 형식의 인수가 필요하지만 variadic 인수 1의 형식이 'time_t'입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2107,51): message : 서식 문자열에서 '%lld'을(를) 사용하는 것이 좋습니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2107,51): message : 서식 문자열에서 '%I64d'을(를) 사용하는 것이 좋습니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1915,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1929,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1978,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1978,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1978,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1978,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2080,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2081,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2027,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1916,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1930,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1979,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1979,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1979,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1979,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2093,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
+F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2094,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
   r2f_cfg.cpp
   r2f_rua.cpp
   amf.c
@@ -66,6 +63,6 @@ F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2081,38): warning C4101: 'buffer' :�
   rtmp.c
   코드를 생성하고 있습니다.
   Previous IPDB not found, fall back to full compilation.
-  All 657 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 658 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   코드를 생성했습니다.
   Stream2File.vcxproj -> F:\Source\RecordHT2\Release\RecordHT.exe

@@ -640,6 +640,10 @@ int mp4_write_video_frame(MP4CTX * p_ctx, void * p_data, uint32 len, int b_key)
     	{
     		p_ctx->s_time = sys_os_get_ms();
     		p_ctx->e_time = p_ctx->s_time;
+            time_t time_now;
+
+            time(&time_now);
+            p_ctx->i_time = time_now;
     	}
     	else
     	{

@@ -64,6 +64,7 @@ typedef struct
     char    savepath[256];      // recording save full path
     int     filefmt;            // R2F_FMT_AVI or R2F_FMT_MP4
     int     pnum;               //  Process number For Record Server 
+    time_t  recstart;           //  Record Start time
     uint32  framerate;          // video recording frame rate
     time_t  starttime;          // start recording time, unit is second
     uint32  recordsize;         // Recording size configured for each recording, unit is kbyte

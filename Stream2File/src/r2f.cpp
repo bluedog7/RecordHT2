@@ -661,13 +661,14 @@ int r2f_notify_callback(int event, void * puser)
 #endif // MP4_FORMAT
 
     p_rua->starttime = time(NULL);
+    p_rua->recstart = time(NULL);
     
     return 0;
 }
 
 int rtsp_audio_callback(uint8 * pdata, int len, uint32 ts, uint16 seq, void * puser)
 {
-    // log_print(HT_LOG_DBG, "%s, len = %d, ts = %u, seq = %d\r\n", __FUNCTION__, len, ts, seq);
+   //  log_print(HT_LOG_DBG, "%s, len = %d, ts = %u, seq = %d\r\n", __FUNCTION__, len, ts, seq);
 
     return r2f_record_audio((RUA *)puser, pdata, len);
 }
@@ -2056,7 +2057,7 @@ BOOL r2f_start(char* pid)
                             if (NULL != p_rua && p_rua->pnum == atoi(row[3]))
                             {
                                 fnum = i;
-                                rawtime = (const time_t)p_rua->mp4ctx->s_time;
+                                rawtime = (const time_t)p_rua->mp4ctx->i_time;
                                 mov_no = p_rua->mp4ctx->s_time;
 
                                 if (p_rua->rtsp)
@@ -2070,8 +2071,20 @@ BOOL r2f_start(char* pid)
                                     avi_write_close(p_rua->avictx);
                                     p_rua->avictx = NULL;
                                 }
+
+                                
                                 if (p_rua->mp4ctx)
                                 {
+                                    //fps 최종계산 
+                                    float fps = (float)(p_rua->mp4ctx->i_frame_video * 1000.0) / (p_rua->mp4ctx->e_time - p_rua->mp4ctx->s_time);
+                                    p_rua->mp4ctx->v_fps = (uint32)(fps + 0.5);
+                                    if (p_rua->mp4ctx->v_fps > 0)
+                                    {
+                                        gf_isom_set_media_timescale(p_rua->mp4ctx->handler, p_rua->mp4ctx->v_track_id, p_rua->mp4ctx->v_fps, GF_TRUE);
+                                    }
+
+                                    log_print(HT_LOG_DBG, "%s, stime=%u, etime=%u, frames=%d, fps=%d\r\n",
+                                        __FUNCTION__, p_rua->mp4ctx->s_time, p_rua->mp4ctx->e_time, p_rua->mp4ctx->i_frame_video, p_rua->mp4ctx->v_fps);
                                     mp4_write_close(p_rua->mp4ctx);
 
                                 }
@@ -2097,14 +2110,14 @@ BOOL r2f_start(char* pid)
 
 
                                 // ConvertThread(p_rua->savepath);
-                                log_print(HT_LOG_INFO, "[%s]", fname);
+                                log_print(HT_LOG_INFO, "[%s]\n", fname);
                                 printf("[%s]\n", fname);
                                 log_print(HT_LOG_INFO, "[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
                                 printf("[%s],[%d:%d:%d] %d record process is terminated \n", __FUNCTION__, tm->tm_hour, tm->tm_min, tm->tm_sec, p_rua->pnum);
 
 
                                 char sqlcmd[256];
-                                sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%ld where no=%d", rawtime, p_rua->pnum);
+                                sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%ld where no=%ld", (long) rawtime, p_rua->pnum);
                                 log_print(HT_LOG_INFO, "%s\n", sqlcmd);
                                 printf("%s\n", sqlcmd);
                                 mysql_query(&mysql, sqlcmd);
