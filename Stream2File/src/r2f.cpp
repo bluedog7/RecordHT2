@@ -668,14 +668,20 @@ int r2f_notify_callback(int event, void * puser)
 
 int rtsp_audio_callback(uint8 * pdata, int len, uint32 ts, uint16 seq, void * puser)
 {
-   //  log_print(HT_LOG_DBG, "%s, len = %d, ts = %u, seq = %d\r\n", __FUNCTION__, len, ts, seq);
+    RUA* p_rua;
+    p_rua = (RUA*)puser;
+    p_rua->acurtime = ts;
+  //   log_print(HT_LOG_DBG, "%s, len = %d, ts = %u, seq = %d\r\n", __FUNCTION__, len, ts, seq);
 
     return r2f_record_audio((RUA *)puser, pdata, len);
 }
 
 int rtsp_video_callback(uint8 * pdata, int len, uint32 ts, uint16 seq, void * puser)
 {
-    // log_print(HT_LOG_DBG, "%s, len = %d, ts = %u, seq = %d\r\n", __FUNCTION__, len, ts, seq);
+    RUA* p_rua;
+    p_rua = (RUA*)puser;
+    p_rua->vcurtime = ts;
+   //  log_print(HT_LOG_DBG, "%s, len = %d, ts = %u, seq = %d\r\n", __FUNCTION__, len, ts, seq);
 
     return r2f_record_video((RUA *)puser, pdata, len);
 }
@@ -2051,6 +2057,7 @@ BOOL r2f_start(char* pid)
                         {
                             RUA* p_rua = rua_get_by_index(i);
                             time_t rawtime;
+                            long starttime;
                             long mov_no;
 
 
@@ -2058,6 +2065,7 @@ BOOL r2f_start(char* pid)
                             {
                                 fnum = i;
                                 rawtime = (const time_t)p_rua->mp4ctx->i_time;
+                                starttime = (long)p_rua->mp4ctx->s_time;
                                 mov_no = p_rua->mp4ctx->s_time;
 
                                 if (p_rua->rtsp)
@@ -2117,7 +2125,7 @@ BOOL r2f_start(char* pid)
 
 
                                 char sqlcmd[256];
-                                sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%ld where no=%ld", (long) rawtime, p_rua->pnum);
+                                sprintf_s(sqlcmd, "UPDATE kn_simprec_mov SET rtsp_start=%ld where no=%ld", (long) starttime, p_rua->pnum);
                                 log_print(HT_LOG_INFO, "%s\n", sqlcmd);
                                 printf("%s\n", sqlcmd);
                                 mysql_query(&mysql, sqlcmd);

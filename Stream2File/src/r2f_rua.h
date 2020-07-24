@@ -69,7 +69,8 @@ typedef struct
     time_t  starttime;          // start recording time, unit is second
     uint32  recordsize;         // Recording size configured for each recording, unit is kbyte
     uint32  recordtime;         // Recording time configured for each recording, unit is second
-
+    long    vcurtime; // current ts of video  
+    long    acurtime; // current ts of audio
     CRtspClient * rtsp;         // rtsp client 
 #ifdef RTMP_STREAM
     CRtmpClient * rtmp;         // rtmp client

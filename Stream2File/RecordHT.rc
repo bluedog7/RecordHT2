@@ -51,7 +51,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
+ FILEVERSION 1,0,0,2
  PRODUCTVERSION 1,0,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
@@ -68,8 +68,8 @@ BEGIN
         BLOCK "041204b0"
         BEGIN
             VALUE "CompanyName", "IBST"
-            VALUE "FileDescription", "IBST REcord SErver"
-            VALUE "FileVersion", "1.0.0.1"
+            VALUE "FileDescription", "IBST Record SErver"
+            VALUE "FileVersion", "1.0.0.2"
             VALUE "InternalName", "RecordHT.exe"
             VALUE "LegalCopyright", "Copyright (C) 2020"
             VALUE "OriginalFilename", "RecordHT.exe"
