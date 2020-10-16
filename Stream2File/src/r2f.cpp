@@ -1946,7 +1946,7 @@ BOOL r2f_start(char* pid)
     ::GetPrivateProfileString(_T("SectionA"), _T("End"), _T("6"), END, 3, strPathIni);
     ::GetPrivateProfileString(_T("SectionA"), _T("Backup"), _T("0"), BACKUP, 3, strPathIni);
     ::GetPrivateProfileString(_T("SectionA"), _T("FPS"), _T("25"), FPS, 3, strPathIni);
-    ::GetPrivateProfileString(_T("SectionA"), _T("DBNAME"), _T("simprec_use"), DB_NAME, 3, strPathIni);
+    ::GetPrivateProfileString(_T("SectionA"), _T("DB"), _T("simprec_use"), DB_NAME, 20, strPathIni);
     WideCharToMultiByte(CP_ACP, 0, DB_NAME, 20, db_name, 20, NULL, NULL);
     printf("Server IP [%S] ROOM[%S-%S] BACKUP[%S] FPS[%S] \n", DBIP, START, END, BACKUP, FPS);
     mysql_init(&mysql);
