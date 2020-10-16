@@ -1,63 +1,67 @@
-f:\source\recordht2\stream2file\debug\recordht\recordht.pch
-f:\source\recordht2\stream2file\debug\recordht\vc142.pdb
-f:\source\recordht2\stream2file\debug\recordht\stdafx.obj
-f:\source\recordht2\stream2file\debug\recordht\video_decoder.obj
-f:\source\recordht2\stream2file\debug\recordht\avcodec_mutex.obj
-f:\source\recordht2\stream2file\debug\recordht\audio_encoder.obj
-f:\source\recordht2\stream2file\debug\recordht\audio_decoder.obj
-f:\source\recordht2\stream2file\debug\recordht\main.obj
-f:\source\recordht2\stream2file\debug\recordht\http_parse.obj
-f:\source\recordht2\stream2file\debug\recordht\http_mjpeg_cln.obj
-f:\source\recordht2\stream2file\debug\recordht\http_cln.obj
-f:\source\recordht2\stream2file\debug\recordht\xml_node.obj
-f:\source\recordht2\stream2file\debug\recordht\word_analyse.obj
-f:\source\recordht2\stream2file\debug\recordht\util.obj
-f:\source\recordht2\stream2file\debug\recordht\sys_os.obj
-f:\source\recordht2\stream2file\debug\recordht\sys_log.obj
-f:\source\recordht2\stream2file\debug\recordht\sys_buf.obj
-f:\source\recordht2\stream2file\debug\recordht\rfc_md5.obj
-f:\source\recordht2\stream2file\debug\recordht\ppstack.obj
-f:\source\recordht2\stream2file\debug\recordht\linked_list.obj
-f:\source\recordht2\stream2file\debug\recordht\hxml.obj
-f:\source\recordht2\stream2file\debug\recordht\hqueue.obj
-f:\source\recordht2\stream2file\debug\recordht\base64.obj
-f:\source\recordht2\stream2file\debug\recordht\rtsp_util.obj
-f:\source\recordht2\stream2file\debug\recordht\rtsp_rcua.obj
-f:\source\recordht2\stream2file\debug\recordht\rtsp_parse.obj
-f:\source\recordht2\stream2file\debug\recordht\rtsp_cln.obj
-f:\source\recordht2\stream2file\debug\recordht\rtsp_backchannel.obj
-f:\source\recordht2\stream2file\debug\recordht\rtp_rx.obj
-f:\source\recordht2\stream2file\debug\recordht\pcm_rtp_rx.obj
-f:\source\recordht2\stream2file\debug\recordht\mpeg4_rtp_rx.obj
-f:\source\recordht2\stream2file\debug\recordht\mpeg4.obj
-f:\source\recordht2\stream2file\debug\recordht\mjpeg_tables.obj
-f:\source\recordht2\stream2file\debug\recordht\mjpeg_rtp_rx.obj
-f:\source\recordht2\stream2file\debug\recordht\media_util.obj
-f:\source\recordht2\stream2file\debug\recordht\h265_util.obj
-f:\source\recordht2\stream2file\debug\recordht\h265_rtp_rx.obj
-f:\source\recordht2\stream2file\debug\recordht\h264_util.obj
-f:\source\recordht2\stream2file\debug\recordht\h264_rtp_rx.obj
-f:\source\recordht2\stream2file\debug\recordht\bit_vector.obj
-f:\source\recordht2\stream2file\debug\recordht\aac_rtp_rx.obj
-f:\source\recordht2\stream2file\debug\recordht\rtmp_cln.obj
-f:\source\recordht2\stream2file\debug\recordht\video_encoder.obj
-f:\source\recordht2\stream2file\debug\recordht\r2f_rua.obj
-f:\source\recordht2\stream2file\debug\recordht\r2f_cfg.obj
-f:\source\recordht2\stream2file\debug\recordht\r2f.obj
-f:\source\recordht2\stream2file\debug\recordht\mp4_write.obj
-f:\source\recordht2\stream2file\debug\recordht\avi_write.obj
-f:\source\recordht2\stream2file\debug\recordht\avi_read.obj
-f:\source\recordht2\stream2file\debug\recordht\rtmp.obj
-f:\source\recordht2\stream2file\debug\recordht\parseurl.obj
-f:\source\recordht2\stream2file\debug\recordht\log.obj
-f:\source\recordht2\stream2file\debug\recordht\hashswf.obj
-f:\source\recordht2\stream2file\debug\recordht\amf.obj
-f:\source\recordht2\debug\recordht.ilk
-f:\source\recordht2\debug\recordht.exe
-f:\source\recordht2\debug\recordht.pdb
-f:\source\recordht2\stream2file\debug\recordht\recordht.tlog\cl.read.1.tlog
-f:\source\recordht2\stream2file\debug\recordht\recordht.tlog\cl.write.1.tlog
-f:\source\recordht2\stream2file\debug\recordht\recordht.tlog\cl.command.1.tlog
-f:\source\recordht2\stream2file\debug\recordht\recordht.tlog\link.read.1.tlog
-f:\source\recordht2\stream2file\debug\recordht\recordht.tlog\link.write.1.tlog
-f:\source\recordht2\stream2file\debug\recordht\recordht.tlog\link.command.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.pch
+c:\working source\recordht2\stream2file\debug\recordht\vc142.pdb
+c:\working source\recordht2\stream2file\debug\recordht\stdafx.obj
+c:\working source\recordht2\stream2file\debug\recordht\video_decoder.obj
+c:\working source\recordht2\stream2file\debug\recordht\avcodec_mutex.obj
+c:\working source\recordht2\stream2file\debug\recordht\audio_encoder.obj
+c:\working source\recordht2\stream2file\debug\recordht\audio_decoder.obj
+c:\working source\recordht2\stream2file\debug\recordht\main.obj
+c:\working source\recordht2\stream2file\debug\recordht\http_parse.obj
+c:\working source\recordht2\stream2file\debug\recordht\http_mjpeg_cln.obj
+c:\working source\recordht2\stream2file\debug\recordht\http_cln.obj
+c:\working source\recordht2\stream2file\debug\recordht\xml_node.obj
+c:\working source\recordht2\stream2file\debug\recordht\word_analyse.obj
+c:\working source\recordht2\stream2file\debug\recordht\util.obj
+c:\working source\recordht2\stream2file\debug\recordht\sys_os.obj
+c:\working source\recordht2\stream2file\debug\recordht\sys_log.obj
+c:\working source\recordht2\stream2file\debug\recordht\sys_buf.obj
+c:\working source\recordht2\stream2file\debug\recordht\rfc_md5.obj
+c:\working source\recordht2\stream2file\debug\recordht\ppstack.obj
+c:\working source\recordht2\stream2file\debug\recordht\linked_list.obj
+c:\working source\recordht2\stream2file\debug\recordht\hxml.obj
+c:\working source\recordht2\stream2file\debug\recordht\hqueue.obj
+c:\working source\recordht2\stream2file\debug\recordht\base64.obj
+c:\working source\recordht2\stream2file\debug\recordht\rtsp_util.obj
+c:\working source\recordht2\stream2file\debug\recordht\rtsp_rcua.obj
+c:\working source\recordht2\stream2file\debug\recordht\rtsp_parse.obj
+c:\working source\recordht2\stream2file\debug\recordht\rtsp_cln.obj
+c:\working source\recordht2\stream2file\debug\recordht\rtsp_backchannel.obj
+c:\working source\recordht2\stream2file\debug\recordht\rtp_rx.obj
+c:\working source\recordht2\stream2file\debug\recordht\pcm_rtp_rx.obj
+c:\working source\recordht2\stream2file\debug\recordht\mpeg4_rtp_rx.obj
+c:\working source\recordht2\stream2file\debug\recordht\mpeg4.obj
+c:\working source\recordht2\stream2file\debug\recordht\mjpeg_tables.obj
+c:\working source\recordht2\stream2file\debug\recordht\mjpeg_rtp_rx.obj
+c:\working source\recordht2\stream2file\debug\recordht\media_util.obj
+c:\working source\recordht2\stream2file\debug\recordht\h265_util.obj
+c:\working source\recordht2\stream2file\debug\recordht\h265_rtp_rx.obj
+c:\working source\recordht2\stream2file\debug\recordht\h264_util.obj
+c:\working source\recordht2\stream2file\debug\recordht\h264_rtp_rx.obj
+c:\working source\recordht2\stream2file\debug\recordht\bit_vector.obj
+c:\working source\recordht2\stream2file\debug\recordht\aac_rtp_rx.obj
+c:\working source\recordht2\stream2file\debug\recordht\rtmp_cln.obj
+c:\working source\recordht2\stream2file\debug\recordht\video_encoder.obj
+c:\working source\recordht2\stream2file\debug\recordht\r2f_rua.obj
+c:\working source\recordht2\stream2file\debug\recordht\r2f_cfg.obj
+c:\working source\recordht2\stream2file\debug\recordht\r2f.obj
+c:\working source\recordht2\stream2file\debug\recordht\mp4_write.obj
+c:\working source\recordht2\stream2file\debug\recordht\avi_write.obj
+c:\working source\recordht2\stream2file\debug\recordht\avi_read.obj
+c:\working source\recordht2\stream2file\debug\recordht\rtmp.obj
+c:\working source\recordht2\stream2file\debug\recordht\parseurl.obj
+c:\working source\recordht2\stream2file\debug\recordht\log.obj
+c:\working source\recordht2\stream2file\debug\recordht\hashswf.obj
+c:\working source\recordht2\stream2file\debug\recordht\amf.obj
+c:\working source\recordht2\debug\recordht.ilk
+c:\working source\recordht2\debug\recordht.exe
+c:\working source\recordht2\debug\recordht.pdb
+c:\working source\recordht2\stream2file\debug\recordht\recordht.res
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\cl.command.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\cl.read.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\cl.write.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\link.command.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\link.read.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\link.write.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\rc.command.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\rc.read.1.tlog
+c:\working source\recordht2\stream2file\debug\recordht\recordht.tlog\rc.write.1.tlog

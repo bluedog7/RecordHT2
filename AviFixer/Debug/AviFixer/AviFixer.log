@@ -1,1 +1,12 @@
-﻿
+﻿  sys_log.cpp
+  sys_os.cpp
+  bit_vector.cpp
+  h264_util.cpp
+  h265_util.cpp
+  media_util.cpp
+  avi_read.cpp
+  avi_write.cpp
+  main.cpp
+  stdafx.cpp
+  코드를 생성하고 있습니다...
+  AviFixer.vcxproj -> C:\Working Source\RecordHT2\Debug\AviFixer.exe

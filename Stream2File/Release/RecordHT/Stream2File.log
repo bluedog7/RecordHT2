@@ -45,15 +45,15 @@
   avi_write.cpp
   mp4_write.cpp
   r2f.cpp
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2033,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1922,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1936,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1985,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1985,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1985,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(1985,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2101,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
-F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2102,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2033,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1922,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1936,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1985,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1985,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1985,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1985,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2101,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
+C:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2102,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
   r2f_cfg.cpp
   r2f_rua.cpp
   amf.c
@@ -65,4 +65,4 @@ F:\Source\RecordHT2\Stream2File\src\r2f.cpp(2102,38): warning C4101: 'buffer' :�
   Previous IPDB not found, fall back to full compilation.
   All 658 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   코드를 생성했습니다.
-  Stream2File.vcxproj -> F:\Source\RecordHT2\Release\RecordHT.exe
+  Stream2File.vcxproj -> C:\Working Source\RecordHT2\Release\RecordHT.exe

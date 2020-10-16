@@ -1875,7 +1875,7 @@ BOOL r2f_init_ex(STREAM2FILE* p_r2f, char* strfilename, int pnum)
 
 #define DB_PASS "apmsetup"
 
-#define DB_NAME "simprec_use"
+//#define DB_NAME "simprec_use"
 
 BOOL r2f_start(char* pid)
 {
@@ -1930,6 +1930,8 @@ BOOL r2f_start(char* pid)
     TCHAR END[3] = { 0 };
     TCHAR BACKUP[3] = { 0 };
     TCHAR FPS[3] = { 0 };
+    TCHAR DB_NAME[20] = { 0 };
+    char  db_name[20];
     char query[256];
     int backup = 0;
     int len = 20;
@@ -1944,6 +1946,8 @@ BOOL r2f_start(char* pid)
     ::GetPrivateProfileString(_T("SectionA"), _T("End"), _T("6"), END, 3, strPathIni);
     ::GetPrivateProfileString(_T("SectionA"), _T("Backup"), _T("0"), BACKUP, 3, strPathIni);
     ::GetPrivateProfileString(_T("SectionA"), _T("FPS"), _T("25"), FPS, 3, strPathIni);
+    ::GetPrivateProfileString(_T("SectionA"), _T("DBNAME"), _T("simprec_use"), DB_NAME, 3, strPathIni);
+    WideCharToMultiByte(CP_ACP, 0, DB_NAME, 20, db_name, 20, NULL, NULL);
     printf("Server IP [%S] ROOM[%S-%S] BACKUP[%S] FPS[%S] \n", DBIP, START, END, BACKUP, FPS);
     mysql_init(&mysql);
     WideCharToMultiByte(CP_ACP, 0, DBIP, 20, dbip, len, NULL, NULL);
@@ -1951,7 +1955,7 @@ BOOL r2f_start(char* pid)
     WideCharToMultiByte(CP_ACP, 0, END, 3, end, len, NULL, NULL);
     WideCharToMultiByte(CP_ACP, 0, FPS, 3, fps, len, NULL, NULL);
     m_fps = atoi(fps);
-    if (!mysql_real_connect(&mysql, dbip, DB_ID, DB_PASS, DB_NAME, 3306, 0, 0))
+    if (!mysql_real_connect(&mysql, dbip, DB_ID, DB_PASS, db_name, 3306, 0, 0))
     {
         log_print(HT_LOG_ERR, "%s, mysql connect  failed,\r\n", __FUNCTION__);
 
