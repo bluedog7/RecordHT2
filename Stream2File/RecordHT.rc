@@ -68,8 +68,8 @@ BEGIN
         BLOCK "041204b0"
         BEGIN
             VALUE "CompanyName", "IBST"
-            VALUE "FileDescription", "IBST Record SErver"
-            VALUE "FileVersion", "1.1.0.1"
+            VALUE "FileDescription", "IBST Record Server For MariaDB"
+            VALUE "FileVersion", "1.1.0.2"
             VALUE "InternalName", "RecordHT.exe"
             VALUE "LegalCopyright", "Copyright (C) 2020"
             VALUE "OriginalFilename", "RecordHT.exe"

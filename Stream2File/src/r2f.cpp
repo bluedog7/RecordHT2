@@ -36,7 +36,7 @@
 #include <thread>
 using namespace std;
 
-#pragma comment(lib,"libmysql.lib")
+//#pragma comment(lib,"libmysql.lib")
 /***************************************************************************************/
 #define R2F_MAJOR_VERSION   2
 #define R2F_MINOR_VERSION   4
@@ -1890,24 +1890,24 @@ BOOL r2f_start(char* pid)
     sprintf(lfname, ".\\log\\ibstrecord_%s.log", pid);
 
     if (g_r2f_cfg.log_enable)
-	{
+    {
         log_init(lfname);
-		log_set_level(g_r2f_cfg.log_level);
-	}
+        log_set_level(g_r2f_cfg.log_level);
+    }
 
-	g_r2f_cls.msg_queue = hqCreate(10, sizeof(RIMG), HQ_GET_WAIT | HQ_PUT_WAIT);
-	if (NULL == g_r2f_cls.msg_queue)
-	{
-		log_print(HT_LOG_ERR, "%s, create queue failed\r\n", __FUNCTION__);
-		return FALSE;
-	}
+    g_r2f_cls.msg_queue = hqCreate(10, sizeof(RIMG), HQ_GET_WAIT | HQ_PUT_WAIT);
+    if (NULL == g_r2f_cls.msg_queue)
+    {
+        log_print(HT_LOG_ERR, "%s, create queue failed\r\n", __FUNCTION__);
+        return FALSE;
+    }
 
-	g_r2f_cls.task_flag = 1;
-	g_r2f_cls.tid_task = sys_os_create_thread((void *)r2f_task_thread, NULL);
+    g_r2f_cls.task_flag = 1;
+    g_r2f_cls.tid_task = sys_os_create_thread((void*)r2f_task_thread, NULL);
 
     sys_buf_init(4 * MAX_NUM_RUA);
     rtsp_msg_buf_init(4 * MAX_NUM_RUA);
-	rua_proxy_init();
+    rua_proxy_init();
 
 #ifdef RTMP_STREAM
     rtmp_set_rtmp_log();
@@ -1955,10 +1955,18 @@ BOOL r2f_start(char* pid)
     WideCharToMultiByte(CP_ACP, 0, END, 3, end, len, NULL, NULL);
     WideCharToMultiByte(CP_ACP, 0, FPS, 3, fps, len, NULL, NULL);
     m_fps = atoi(fps);
+    try
+    {
+    
     if (!mysql_real_connect(&mysql, dbip, DB_ID, DB_PASS, db_name, 3306, 0, 0))
     {
         log_print(HT_LOG_ERR, "%s, mysql connect  failed,\r\n", __FUNCTION__);
 
+    }
+    }
+    catch (char* e)
+    {
+        log_print(HT_LOG_ERR, "%s, mysql connect  failed,\r\n", e);
     }
     if (_tcscmp(BACKUP, _T("1")) == 0)
     {

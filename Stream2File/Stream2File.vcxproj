@@ -90,7 +90,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;HT_STATIC;ZLIB_WINAPI;MP4_FORMAT;RTMP_STREAM;MJPEG_STREAM;AUDIO_CONV;VIDEO_CONV;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\;.\bm;.\http;.\rtp;.\rtsp;.\src;.\rtmp;.\librtmp;.\media;.\gpac\include;.\zlib\include;.\openssl\include;.\ffmpeg\include;.\mysql-5.7.27-win32\mysql-5.7.27-win32\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;.\bm;.\http;.\rtp;.\rtsp;.\src;.\rtmp;.\librtmp;.\media;.\gpac\include;.\zlib\include;.\openssl\include;.\ffmpeg\include;.\MariaDB Connector C\include</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4819;4244</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <MinimalRebuild>false</MinimalRebuild>
@@ -98,8 +98,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\gpac\lib\x86;.\zlib\lib\x86;.\openssl\lib\x86;.\ffmpeg\lib\x86;.\mysql-5.7.27-win32\mysql-5.7.27-win32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>winmm.lib;libgpac.lib;zlibwapi.lib;libcrypto.lib;libssl.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\gpac\lib\x86;.\zlib\lib\x86;.\openssl\lib\x86;.\ffmpeg\lib\x86;.\MariaDB Connector C\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>winmm.lib;libgpac.lib;zlibwapi.lib;libcrypto.lib;libssl.lib;avcodec.lib;avformat.lib;avutil.lib;swresample.lib;swscale.lib;libmariadb.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>libcmt.lib</IgnoreSpecificDefaultLibraries>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
     </Link>
