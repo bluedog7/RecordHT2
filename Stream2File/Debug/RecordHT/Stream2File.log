@@ -47,15 +47,15 @@
   avi_write.cpp
   mp4_write.cpp
   r2f.cpp
-D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2045,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2058,43): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
 D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1922,10): warning C4101: 'daytime' :참조되지 않은 지역 변수입니다.
 D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1938,16): warning C4101: 'm_process' :참조되지 않은 지역 변수입니다.
-D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1997,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
-D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1997,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
-D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1997,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
-D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(1997,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
-D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2113,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
-D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2114,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
+D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2010,38): warning C4101: 'cmd2' :참조되지 않은 지역 변수입니다.
+D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2010,31): warning C4101: 'cmd' :참조되지 않은 지역 변수입니다.
+D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2010,46): warning C4101: 'cmd3' :참조되지 않은 지역 변수입니다.
+D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2010,150): warning C4101: 'fname' :참조되지 않은 지역 변수입니다.
+D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2126,38): warning C4101: 'timestr' :참조되지 않은 지역 변수입니다.
+D:\Working Source\RecordHT2\Stream2File\src\r2f.cpp(2127,38): warning C4101: 'buffer' :참조되지 않은 지역 변수입니다.
   r2f_cfg.cpp
   r2f_rua.cpp
   코드를 생성하고 있습니다...

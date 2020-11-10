@@ -1978,6 +1978,19 @@ BOOL r2f_start(char* pid)
     int complete = 0;
     while (complete == 0)
     {
+        int ret = mysql_ping(&mysql);
+        if (ret !=0)
+        { 
+            log_print(HT_LOG_ERR, "%s, mysql connect  losted,\r\n", __FUNCTION__);
+
+            if (!mysql_real_connect(&mysql, dbip, DB_ID, DB_PASS, db_name, 3306, 0, 0))
+            {
+                log_print(HT_LOG_ERR, "%s, mysql connect  failed,\r\n", __FUNCTION__);
+                continue;
+
+            }
+        }
+
         if (mysql_query(&mysql, query))
         {	// ???? ??u
             // return;

@@ -1,0 +1,13 @@
+[2020-11-11 08:39:49] : [INFO] net_buf_init, num = 400
+[2020-11-11 08:39:49] : [INFO] hdrv_buf_init, num = 3200
+[2020-11-11 08:40:21] : [INFO] [r2f_start],9929 record process is started[D:\simprec_use\simprec_use\mov\1384472501\1\10009_1_1605050746.mp4] 
+[2020-11-11 08:40:21] : [DEBUG] r2f_notify_callback, event = 1
+[2020-11-11 08:40:21] : [DEBUG] TX >> OPTIONS rtsp://10.10.27.134:554/H.264/media.smp RTSP/1.0
+CSeq: 1
+User-Agent: happytimesoft rtsp client
+
+
+[2020-11-11 08:40:21] : [DEBUG] CRtspClient::tcp_rx_thread, exit
+[2020-11-11 08:40:21] : [DEBUG] r2f_start, stime=0, etime=0, frames=0, fps=-1
+[2020-11-11 08:40:21] : [INFO] [D:\simprec_use\simprec_use\mov\1384472501\1\10009_1_1605050746.mp4 start time is [9:0:0]]
+[2020-11-11 08:40:21] : [INFO] [r2f_start],[8:40:21] 9929 record process is terminated 
